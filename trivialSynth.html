@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <script src="virtualPianoKeyboard.js" type="text/javascript"></script>
+    <script src="mouse.js" type="text/javascript"></script>
+    <script src="keyboard.js" type="text/javascript"></script>
+    <script type="text/javascript">
+function init() {
+	var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+	var osc = audioCtx.createOscillator();
+	var gain = audioCtx.createGain();
+
+	osc.connect(gain);
+	gain.connect(audioCtx.destination);
+
+	osc.frequency.value = 0;
+	gain.gain.value = 0;
+	osc.start();
+
+	var curNote = NaN;
+
+	var canvas = document.getElementById("canvas");
+	var ctx = canvas.getContext("2d");
+
+	var k = virtualPianoKeyboard.createKeyboard25();
+	k.ctx = ctx;
+	k.x = 0;
+	k.y = 0;
+	k.width = canvas.width;
+	k.height = canvas.height;
+
+	k.addMouseIn(document, canvas);
+	k.addKeyboardIn(document, virtualPianoKeyboard.keyCodeMap25);
+
+	k.onNoteDown = function (note) {
+		osc.frequency.value = 440 * Math.pow(2, (note - 69) / 12);
+		gain.gain.value = 1;
+		curNote = note;
+	};
+
+	k.onNoteUp = function (note) {
+		if (note == curNote)
+			gain.gain.value = 0;
+	};
+
+	k.update();
+
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	k.draw();
+}
+
+window.addEventListener("load", init);
+    </script>
+  </head>
+  <body>
+    <canvas id="canvas" width="300" height="100"></canvas>
+  </body>
+</html>
