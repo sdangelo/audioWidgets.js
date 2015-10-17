@@ -64,7 +64,7 @@ virtualPianoKeyboard.keyWhiteLeft.draw = function (ctx) {
 
 	if (this.pressCount) {
 		if (this.hoverCount) {
-			ctx.fillStyle = "#eee";
+			ctx.fillStyle = "#ddd";
 			ctx.strokeStyle = "#999";
 		} else {
 			ctx.fillStyle = "#ccc";
@@ -124,7 +124,7 @@ virtualPianoKeyboard.keyWhiteRight.draw = function (ctx) {
 
 	if (this.pressCount) {
 		if (this.hoverCount) {
-			ctx.fillStyle = "#eee";
+			ctx.fillStyle = "#ddd";
 			ctx.strokeStyle = "#999";
 		} else {
 			ctx.fillStyle = "#ccc";
@@ -188,7 +188,7 @@ virtualPianoKeyboard.keyWhiteMiddle.draw = function (ctx) {
 
 	if (this.pressCount) {
 		if (this.hoverCount) {
-			ctx.fillStyle = "#eee";
+			ctx.fillStyle = "#ddd";
 			ctx.strokeStyle = "#999";
 		} else {
 			ctx.fillStyle = "#ccc";
@@ -239,7 +239,7 @@ virtualPianoKeyboard.keyWhiteFull.draw = function (ctx) {
 
 	if (this.pressCount) {
 		if (this.hoverCount) {
-			ctx.fillStyle = "#eee";
+			ctx.fillStyle = "#ddd";
 			ctx.strokeStyle = "#999";
 		} else {
 			ctx.fillStyle = "#ccc";

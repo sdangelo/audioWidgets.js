@@ -16,9 +16,8 @@
 
 virtualPianoKeyboard.keyboard.addMouseIn = function (element, canvas) {
 	var k = this;
-	var keyCur = null;
-	var keyCurHover = false;
-	var mouseDown = false;
+	var keyOver = null;
+	var keyPressed = null;
 
 	canvas.addEventListener("mousemove",
 		function (event) {
@@ -27,63 +26,60 @@ virtualPianoKeyboard.keyboard.addMouseIn = function (element, canvas) {
 			var y = event.clientY - rect.top;
 			var key = k.getKeyByCoordinates(x, y);
 
-			if (key != keyCur) {
-				// this first for legato
-				if (key) {
+			if (key != keyOver) {
+				if (key)
 					k.keyHoverIn(key, true);
-					if (mouseDown)
-						k.keyPressIn(key, true);
-				}
+				if (keyOver)
+					k.keyHoverIn(keyOver, false);
+				keyOver = key;
+			}
 
-				if (keyCur) {
-					if (keyCurHover)
-						k.keyHoverIn(keyCur, false);
-					if (mouseDown)
-						k.keyPressIn(keyCur, false);
-				}
-
-				keyCur = key;
-			} else if (!keyCurHover)
-				k.keyHoverIn(keyCur, true);
-
-			keyCurHover = true;
+			if (keyPressed && key != keyPressed) {
+				if (key)
+					k.keyPressIn(key, true);
+				k.keyPressIn(keyPressed, false);
+				keyPressed = key;
+			}
 		});
 
 	canvas.addEventListener("mouseout",
 		function (event) {
-			if (keyCur)
-				k.keyHoverIn(keyCur, false);
-			keyCurHover = false;
+			if (keyOver) {
+				k.keyHoverIn(keyOver, false);
+				keyOver = false;
+			}
 		});
 
 	canvas.addEventListener("mousedown",
 		function (event) {
 			if (event.button == 0) {
-				if (keyCur)
-					k.keyPressIn(keyCur, true);
-				mouseDown = true;
+				if (keyOver) {
+					k.keyPressIn(keyOver, true);
+					keyPressed = keyOver;
+				}
 			}
 		});
 
 	element.addEventListener("mouseup",
 		function (event) {
 			if (event.button == 0) {
-				if (keyCur && mouseDown)
-					k.keyPressIn(keyCur, false);
-				mouseDown = false;
+				if (keyPressed) {
+					k.keyPressIn(keyPressed, false);
+					keyPressed = null;
+				}
 			}
 		});
 
 	element.addEventListener("blur",
 		function (event) {
-			if (keyCur) {
-				if (mouseDown)
-					k.keyPressIn(keyCur, false);
-				if (keyCurHover)
-					k.keyHoverIn(keyCur, false);
-				mouseDown = false;
-				keyCurHover = false;
-				keyCur = null;
+			if (keyOver) {
+				k.keyHoverIn(keyOver, false);
+				keyOver = false;
+			}
+
+			if (keyPressed) {
+				k.keyPressIn(keyPressed, false);
+				keyPressed = null;
 			}
 		});
 };
