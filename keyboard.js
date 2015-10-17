@@ -44,14 +44,17 @@ virtualPianoKeyboard.keyCodeMap25 = {
 
 virtualPianoKeyboard.keyboard.addKeyboardIn = function (element, keyCodeMap) {
 	var k = this;
+	var keysDown = [];
 
 	element.addEventListener("keydown",
 		function (event) {
 			if (!event.repeat && event.code in keyCodeMap) {
 				var note = keyCodeMap[event.code];
 				var key = k.getKeyByNote(note);
-				if (key)
+				if (key) {
 					k.keyPressIn(key, true);
+					keysDown.push(key);
+				}
 			}
 		});
 
@@ -60,9 +63,18 @@ virtualPianoKeyboard.keyboard.addKeyboardIn = function (element, keyCodeMap) {
 			if (event.code in keyCodeMap) {
 				var note = keyCodeMap[event.code];
 				var key = k.getKeyByNote(note);
-				if (key)
+				var i = keysDown.indexOf(key);
+				if (i != -1) {
 					k.keyPressIn(key, false);
+					keysDown.splice(i, 1);
+				}
 			}
 		});
 
+	element.addEventListener("blur",
+		function (event) {
+			for (var i = 0; i < keysDown.length; i++)
+				k.keyPressIn(keysDown[i], false);
+			keysDown = [];
+		});
 };

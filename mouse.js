@@ -73,4 +73,17 @@ virtualPianoKeyboard.keyboard.addMouseIn = function (element, canvas) {
 				mouseDown = false;
 			}
 		});
+
+	element.addEventListener("blur",
+		function (event) {
+			if (keyCur) {
+				if (mouseDown)
+					k.keyPressIn(keyCur, false);
+				if (keyCurHover)
+					k.keyHoverIn(keyCur, false);
+				mouseDown = false;
+				keyCurHover = false;
+				keyCur = null;
+			}
+		});
 };

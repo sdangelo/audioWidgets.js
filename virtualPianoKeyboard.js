@@ -88,7 +88,7 @@ virtualPianoKeyboard.keyWhiteLeft.draw = function (ctx) {
 	ctx.lineTo(x2, y1);
 	ctx.lineTo(x2, y2);
 	ctx.lineTo(x, y2);
-	ctx.lineTo(x, y);
+	ctx.closePath();
 
 	ctx.fill();
 	ctx.stroke();
@@ -148,7 +148,7 @@ virtualPianoKeyboard.keyWhiteRight.draw = function (ctx) {
 	ctx.lineTo(x, y2);
 	ctx.lineTo(x, y1);
 	ctx.lineTo(xB, y1);
-	ctx.lineTo(xB, y);
+	ctx.closePath();
 
 	ctx.fill();
 	ctx.stroke();
@@ -214,7 +214,7 @@ virtualPianoKeyboard.keyWhiteMiddle.draw = function (ctx) {
 	ctx.lineTo(x, y2);
 	ctx.lineTo(x, y1);
 	ctx.lineTo(xB, y1);
-	ctx.lineTo(xB, y);
+	ctx.closePath();
 
 	ctx.fill();
 	ctx.stroke();
