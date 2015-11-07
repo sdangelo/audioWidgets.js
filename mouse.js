@@ -14,72 +14,143 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-virtualPianoKeyboard.keyboard.addMouseIn = function (element, canvas) {
-	var k = this;
-	var keyOver = null;
-	var keyPressed = null;
+audioWidgets.widget.mouseIsOver = function (x, y) {
+	return x > 0 && y > 0 && x < this.width && y < this.height;
+};
 
-	canvas.addEventListener("mousemove",
+audioWidgets.widget.getMouseEventOffset = function (event) {
+	var rect = this.ctx.canvas.getBoundingClientRect();
+	var x = event.clientX - rect.left - this.x;
+	var y = event.clientY - rect.top - this.y;
+	return { x: x, y: y };
+};
+
+audioWidgets.widget.addMouseIn = function () {
+	var handle = {
+		// Read-only
+		active:	false,
+		hover:	false
+	};
+
+	var w = this;
+	var mouseDown = false;
+
+	// Public
+
+	handle.setActive = function (active) {
+		if (active != handle.active) {
+			handle.active = active;
+			w.activeIn(active);
+		}
+	};
+
+	handle.setHover = function (hover) {
+		if (hover != handle.hover) {
+			handle.hover = hover;
+			w.hoverIn(hover);
+		}
+	};
+
+	// Private
+
+	handle.mousedown = w.ctx.canvas.addEventListener("mousedown",
 		function (event) {
-			var rect = canvas.getBoundingClientRect();
-			var x = event.clientX - rect.left; 
-			var y = event.clientY - rect.top;
-			var key = k.getKeyByCoordinates(x, y);
+			var offset = w.getMouseEventOffset(event);
+			mouseDown = w.mouseIsOver(offset.x, offset.y);
+			if (!mouseDown)
+				return;
 
-			if (key != keyOver) {
-				if (key)
-					k.keyHoverIn(key, true);
-				if (keyOver)
-					k.keyHoverIn(keyOver, false);
-				keyOver = key;
+			event.preventDefault();
+
+			if (w.disabled)
+				return;
+
+			w.activeIn(true);
+			handle.active = true;
+
+			if (handle.mousedownHook)
+				handle.mousedownHook.call(w,
+					offset.x, offset.y);
+		});
+
+	handle.mousemove = document.addEventListener("mousemove",
+		function (event) {
+			var offset = w.getMouseEventOffset(event);
+			var over = w.mouseIsOver(offset.x, offset.y);
+
+			if (handle.hover && !over) {
+				w.hoverIn(false);
+				handle.hover = false;
+			} else if (!handle.hover && over) {
+				w.hoverIn(true);
+				handle.hover = true;
 			}
 
-			if (keyPressed && key != keyPressed) {
-				if (key)
-					k.keyPressIn(key, true);
-				k.keyPressIn(keyPressed, false);
-				keyPressed = key;
+			if (handle.mousemoveHook)
+				handle.mousemoveHook.call(w,
+					offset.x, offset.y, handle.active,
+					handle.hover);
+		});
+
+	handle.mouseup = document.addEventListener("mouseup",
+		function (event) {
+			if (handle.active)
+				w.activeIn(false);
+
+			if (handle.mouseupHook) {
+				var offset = w.getMouseEventOffset(event);
+				if (w.mouseIsOver(offset.x, offset.y))
+					handle.mouseupHook.call(w,
+						offset.x, offset.y,
+						handle.active);
+			}
+
+			handle.active = false;
+			mouseDown = false;
+		});
+
+	handle.blur = document.addEventListener("blur",
+		function (event) {
+			if (handle.hover) {
+				handle.hover = false;
+				w.hoverIn(false);
+			}
+			if (handle.active) {
+				handle.active = false;
+				w.activeIn(false);
+			}
+			mouseDown = false;
+		});
+
+	handle.disable = w.addEventListener("disable",
+		function (event) {
+			if (handle.active) {
+				handle.active = false;
+				w.activeIn(false);
 			}
 		});
 
-	canvas.addEventListener("mouseout",
-		function (event) {
-			if (keyOver) {
-				k.keyHoverIn(keyOver, false);
-				keyOver = false;
-			}
-		});
+	return handle;
+};
 
-	canvas.addEventListener("mousedown",
-		function (event) {
-			if (event.button == 0) {
-				if (keyOver) {
-					k.keyPressIn(keyOver, true);
-					keyPressed = keyOver;
-				}
-			}
-		});
+audioWidgets.widget.removeMouseIn = function (handle) {
+	handle.setActive(false);
+	handle.setHover(false);
 
-	element.addEventListener("mouseup",
-		function (event) {
-			if (event.button == 0) {
-				if (keyPressed) {
-					k.keyPressIn(keyPressed, false);
-					keyPressed = null;
-				}
-			}
-		});
+	this.ctx.canvas.removeEventListener(handle.mousedown);
+	document.removeEventListener(handle.mousemove);
+	document.removeEventListener(handle.mouseup);
+	document.removeEventListener(handle.blur);
+	this.removeEventListener(handle.disable);
 
-	element.addEventListener("blur",
-		function (event) {
-			if (keyOver) {
-				k.keyHoverIn(keyOver, false);
-				keyOver = false;
-			}
-
-			if (keyPressed) {
-				k.keyPressIn(keyPressed, false);
-				keyPressed = null;
-			}
-		});
+	delete handle.active;
+	delete handle.hover;
+	delete handle.mousedown;
+	delete handle.mousedownHook;
+	delete handle.mousemove;
+	delete handle.mousemoveHook;
+	delete handle.mouseup;
+	delete handle.mouseupHook;
+	delete handle.blur;
+	delete handle.disable;
 };

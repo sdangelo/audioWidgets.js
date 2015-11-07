@@ -1,9 +1,8 @@
-# virtualPianoKeyboard.js
-Minimal HTML5 Canvas/JavaScript piano keyboard.
+# audioWidgets.js
+Minimal HTML5 Canvas/JavaScript library of GUI widgets for audio applications.
 
-I am too lazy to explain hows and whys, just take a look at the example files:
-* virtualPianoKeyboard - 25 keys piano keyboard;
-* trivialSynth - trivial monophonic synth (Web Audio API based).
+I am too lazy to explain hows and whys, just take a look at the example file
+audioWidgets.html.
 
 ## TODO:
 
@@ -11,5 +10,12 @@ I am too lazy to explain hows and whys, just take a look at the example files:
 * add Web MIDI API events;
 * use polyfills where needed?
 * review API;
+* offscreen rendering;
 * better graphics;
-* documentation.
+* optimizations;
+* documentation;
+* better examples;
+* translate to Web Components?
+* accessibility;
+* move scope/spectrum analyser here from canvasPlot.js?
+* minified version.

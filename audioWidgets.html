@@ -1,0 +1,299 @@
+<html>
+  <head>
+    <script src="audioWidgets.js" type="text/javascript"></script>
+    <script src="mouse.js" type="text/javascript"></script>
+    <script src="button/button.js" type="text/javascript"></script>
+    <script src="button/mouse.js" type="text/javascript"></script>
+    <script src="slider/slider.js" type="text/javascript"></script>
+    <script src="slider/mouse.js" type="text/javascript"></script>
+    <script src="knob/knob.js" type="text/javascript"></script>
+    <script src="knob/mouse.js" type="text/javascript"></script>
+    <script src="pianoKeyboard/pianoKeyboard.js" type="text/javascript"></script>
+    <script src="pianoKeyboard/mouse.js" type="text/javascript"></script>
+    <script src="pianoKeyboard/keyboard.js" type="text/javascript"></script>
+    <script type="text/javascript">
+function init() {
+	var widgetCanvas = document.getElementById("widgetCanvas");
+	var widgetCtx = widgetCanvas.getContext("2d");
+
+	var w = Object.create(audioWidgets.widget);
+	w.init();
+
+	w.ctx = widgetCtx;
+	w.x = 0;
+	w.y = 0;
+	w.width = widgetCanvas.width;
+	w.height = widgetCanvas.height;
+
+	w.clear();
+	w.draw();
+
+	w.addMouseIn();
+
+	var widgetDisableElem = document.getElementById("widgetDisable");
+	widgetDisableElem.addEventListener("click",
+		function () {
+			w.setDisabled(!w.disabled);
+			widgetDisableElem.value = w.disabled ? "Enable" : "Disable";
+		});
+
+	var buttonCanvas = document.getElementById("buttonCanvas");
+	var buttonCtx = buttonCanvas.getContext("2d");
+
+	var b = Object.create(audioWidgets.button);
+	b.init();
+
+	b.ctx = buttonCtx;
+	b.x = 0;
+	b.y = 0;
+	b.width = buttonCanvas.width;
+	b.height = buttonCanvas.height;
+
+	b.clear();
+	b.draw();
+
+	b.addMouseIn();
+
+	b.addEventListener("click",
+		function () {
+			b.toggled = !b.toggled;
+			b.clear();
+			b.draw();
+		});
+
+	var buttonDisableElem = document.getElementById("buttonDisable");
+	buttonDisableElem.addEventListener("click",
+		function () {
+			b.setDisabled(!b.disabled);
+			buttonDisableElem.value = b.disabled ? "Enable" : "Disable";
+		});
+
+	var sliderCanvas = document.getElementById("sliderCanvas");
+	var sliderCtx = sliderCanvas.getContext("2d");
+
+	var s = Object.create(audioWidgets.slider);
+	s.init();
+
+	s.ctx = sliderCtx;
+	s.x = 0;
+	s.y = 0;
+	s.width = sliderCanvas.width;
+	s.height = sliderCanvas.height;
+	s.thumbWidth = 10;
+	s.update();
+
+	s.setValue(0.5);
+
+	s.clear();
+	s.draw();
+
+	var shandle = s.addMouseIn();
+	shandle.map = s.mapParallel;
+
+	var sliderDisableElem = document.getElementById("sliderDisable");
+	sliderDisableElem.addEventListener("click",
+		function () {
+			s.setDisabled(!s.disabled);
+			sliderDisableElem.value = s.disabled ? "Enable" : "Disable";
+		});
+
+	var knobCanvas = document.getElementById("knobCanvas");
+	var knobCtx = knobCanvas.getContext("2d");
+
+	var k = Object.create(audioWidgets.knob);
+	k.init();
+
+	k.ctx = knobCtx;
+	k.x = 0;
+	k.y = 0;
+	k.width = knobCanvas.width;
+	k.height = knobCanvas.height;
+	k.minAngle = 1.25 * Math.PI;
+	k.maxAngle = 1.75 * Math.PI;
+	k.update();
+
+	k.setValue(0.3);
+
+	k.clear();
+	k.draw();
+
+	var khandle = k.addMouseIn();
+	khandle.map = k.mapRadial;
+
+	var knobDisableElem = document.getElementById("knobDisable");
+	knobDisableElem.addEventListener("click",
+		function () {
+			k.setDisabled(!k.disabled);
+			knobDisableElem.value = k.disabled ? "Enable" : "Disable";
+		});
+
+	var keyLeftCanvas = document.getElementById("keyLeftCanvas");
+	var keyLeftCtx = keyLeftCanvas.getContext("2d");
+
+	var kL = Object.create(audioWidgets.pianoKeyboard.keyWhiteLeft);
+	kL.init();
+
+	kL.ctx = keyLeftCtx;
+	kL.x = 0;
+	kL.y = 0;
+	kL.width = keyLeftCanvas.width;
+	kL.height = keyLeftCanvas.height;
+	kL.xE = 0.5;
+	kL.yC = 0.5;
+
+	kL.clear();
+	kL.draw();
+
+	kL.addMouseIn();
+
+	var keyRightCanvas = document.getElementById("keyRightCanvas");
+	var keyRightCtx = keyRightCanvas.getContext("2d");
+
+	var kR = Object.create(audioWidgets.pianoKeyboard.keyWhiteRight);
+	kR.init();
+
+	kR.ctx = keyRightCtx;
+	kR.x = 0;
+	kR.y = 0;
+	kR.width = keyRightCanvas.width;
+	kR.height = keyRightCanvas.height;
+	kR.xB = 0.5;
+	kR.yC = 0.5;
+
+	kR.clear();
+	kR.draw();
+
+	kR.addMouseIn();
+
+	var keyMiddleCanvas = document.getElementById("keyMiddleCanvas");
+	var keyMiddleCtx = keyMiddleCanvas.getContext("2d");
+
+	var kM = Object.create(audioWidgets.pianoKeyboard.keyWhiteMiddle);
+	kM.init();
+
+	kM.ctx = keyMiddleCtx;
+	kM.x = 0;
+	kM.y = 0;
+	kM.width = keyMiddleCanvas.width;
+	kM.height = keyMiddleCanvas.height;
+	kM.xB = 0.25;
+	kM.xE = 0.75;
+	kM.yC = 0.5;
+
+	kM.clear();
+	kM.draw();
+
+	kM.addMouseIn();
+
+	var keyFullCanvas = document.getElementById("keyFullCanvas");
+	var keyFullCtx = keyFullCanvas.getContext("2d");
+
+	var kF = Object.create(audioWidgets.pianoKeyboard.keyWhiteFull);
+	kF.init();
+
+	kF.ctx = keyFullCtx;
+	kF.x = 0;
+	kF.y = 0;
+	kF.width = keyFullCanvas.width;
+	kF.height = keyFullCanvas.height;
+
+	kF.clear();
+	kF.draw();
+
+	kF.addMouseIn();
+
+	var keyBlackCanvas = document.getElementById("keyBlackCanvas");
+	var keyBlackCtx = keyBlackCanvas.getContext("2d");
+
+	var kB = Object.create(audioWidgets.pianoKeyboard.keyBlack);
+	kB.init();
+
+	kB.ctx = keyBlackCtx;
+	kB.x = 0;
+	kB.y = 0;
+	kB.width = keyBlackCanvas.width;
+	kB.height = keyBlackCanvas.height;
+
+	kB.clear();
+	kB.draw();
+
+	kB.addMouseIn();
+
+	var keysDisableElem = document.getElementById("keysDisable");
+	keysDisableElem.addEventListener("click",
+		function () {
+			kL.setDisabled(!kL.disabled);
+			kR.setDisabled(!kR.disabled);
+			kM.setDisabled(!kM.disabled);
+			kF.setDisabled(!kF.disabled);
+			kB.setDisabled(!kB.disabled);
+			keysDisableElem.value = kL.disabled ? "Enable" : "Disable";
+		});
+
+	var keyboardCanvas = document.getElementById("keyboardCanvas");
+	var keyboardCtx = keyboardCanvas.getContext("2d");
+
+	var keyb = audioWidgets.pianoKeyboard.createKeyboard25();
+
+	keyb.ctx = keyboardCtx;
+	keyb.x = 0;
+	keyb.y = 0;
+	keyb.width = keyboardCanvas.width;
+	keyb.height = keyboardCanvas.height;
+
+	keyb.update();
+
+	keyb.clear();
+	keyb.draw();
+
+	var keyboardDisableElem = document.getElementById("keyboardDisable");
+	keyboardDisableElem.addEventListener("click",
+		function () {
+			keyb.setDisabled(!keyb.disabled);
+			keyboardDisableElem.value = keyb.disabled ? "Enable" : "Disable";
+		});
+
+	keyb.addMouseIn();
+	keyb.addKeyboardIn(audioWidgets.pianoKeyboard.keyCodeMap25);
+}
+
+window.addEventListener("load", init);
+    </script>
+  </head>
+  <body>
+    <h2>Generic widget</h2>
+    <canvas id="widgetCanvas" width="50" height="50"></canvas>
+    <div>
+      <input type="button" id="widgetDisable" value="Disable"/>
+    </div>
+    <h2>Button</h2>
+    <canvas id="buttonCanvas" width="100" height="30"></canvas>
+    <div>
+      <input type="button" id="buttonDisable" value="Disable"/>
+    </div>
+    <h2>Slider</h2>
+    <canvas id="sliderCanvas" width="300" height="20"></canvas>
+    <div>
+      <input type="button" id="sliderDisable" value="Disable"/>
+    </div>
+    <h2>Knob</h2>
+    <canvas id="knobCanvas" width="75" height="75"></canvas>
+    <div>
+      <input type="button" id="knobDisable" value="Disable"/>
+    </div>
+    <h2>Single piano keys</h2>
+    <canvas id="keyLeftCanvas" width="25" height="100"></canvas>
+    <canvas id="keyRightCanvas" width="25" height="100"></canvas>
+    <canvas id="keyMiddleCanvas" width="25" height="100"></canvas>
+    <canvas id="keyFullCanvas" width="25" height="100"></canvas>
+    <canvas id="keyBlackCanvas" width="25" height="100"></canvas>
+    <div>
+      <input type="button" id="keysDisable" value="Disable"/>
+    </div>
+    <h2>Keyboard</h2>
+    <canvas id="keyboardCanvas" width="450" height="150"></canvas>
+    <div>
+      <input type="button" id="keyboardDisable" value="Disable"/>
+    </div>
+  </body>
+</html>
