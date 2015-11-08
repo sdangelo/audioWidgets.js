@@ -60,7 +60,7 @@
 })();
 
 audioWidgets.slider.mapParallel = function (x, y, initialX, initialY) {
-	var p = this.vertical ? slider.height - y : x;
+	var p = this.vertical ? this.height - y : x;
 	if (p < this.minThumbPosition)
 		p = this.minThumbPosition;
 	else if (p > this.maxThumbPosition)

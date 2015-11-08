@@ -15,8 +15,8 @@
  */
 
 audioWidgets.knob.mouseIsOver = function (x, y) {
-	x -= this.centerX;
-	y -= this.centerY;
+	x -= this.radius;
+	y -= this.radius;
 	return x * x + y * y < this.radius * this.radius;
 };
 
@@ -49,8 +49,8 @@ audioWidgets.knob.mouseIsOver = function (x, y) {
 		}
 
 		handle.mousedownHook = function (x, y) {
-			x -= this.centerX;
-			y -= this.centerY;
+			x -= this.radius;
+			y -= this.radius;
 			initialX = x;
 			initialY = y;
 			move.call(this, x, y);
@@ -58,8 +58,8 @@ audioWidgets.knob.mouseIsOver = function (x, y) {
 
 		handle.mousemoveHook = function (x, y, active, hover) {
 			if (active)
-				move.call(this, x - this.centerX,
-					  y - this.centerY);
+				move.call(this, x - this.radius,
+					  y - this.radius);
 		};
 
 		return handle;

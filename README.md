@@ -18,4 +18,5 @@ audioWidgets.html.
 * translate to Web Components?
 * accessibility;
 * move scope/spectrum analyser here from canvasPlot.js?
+* themeing?
 * minified version.

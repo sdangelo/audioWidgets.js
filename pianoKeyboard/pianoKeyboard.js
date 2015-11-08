@@ -35,7 +35,7 @@ audioWidgets.pianoKeyboard.key.note = NaN;	// MIDI note number
 			this.ctx.fillStyle = "#fff";
 		} else {
 			this.ctx.strokeStyle = "#9f9f9f";
-			this.ctx.fillStyle = "#efefef";
+			this.ctx.fillStyle = "#f7f7f7";
 		}
 
 		this.ctx.lineWidth = 1;
