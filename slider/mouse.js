@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefano D'Angelo <zanga.mail@gmail.com>
+ * Copyright (C) 2015, 2023 Stefano D'Angelo <zanga.mail@gmail.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -22,12 +22,15 @@
 
 		var initialX;
 		var initialY;
+		var prevX;
+		var prevY;
 
 		function move(x, y) {
 			if (handle.map) {
 				var thumbPosition =
 					handle.map.call(this, x, y,
-							initialX, initialY);
+							initialX, initialY,
+							prevX, prevY);
 				if (thumbPosition != this.thumbPosition
 				    && this.thumbPositionIsValid(thumbPosition))
 				{
@@ -42,11 +45,15 @@
 					}
 				}
 			}
+			prevX = x;
+			prevY = y;
 		}
 
 		handle.mousedownHook = function (x, y) {
 			initialX = x;
 			initialY = y;
+			prevX = x;
+			prevY = y;
 			move.call(this, x, y);
 		};
 
@@ -59,8 +66,17 @@
 	};
 })();
 
-audioWidgets.slider.mapParallel = function (x, y, initialX, initialY) {
+audioWidgets.slider.mapParallel = function (x, y, initialX, initialY, prevX, prevY) {
 	var p = this.vertical ? this.height - y : x;
+	if (p < this.minThumbPosition)
+		p = this.minThumbPosition;
+	else if (p > this.maxThumbPosition)
+		p = this.maxThumbPosition;
+	return p;
+};
+
+audioWidgets.slider.mapParallelDifferential = function (x, y, initialX, initialY, prevX, prevY) {
+	var p = this.vertical ? this.thumbPosition - y + prevY: this.thumbPosition + x - prevX;
 	if (p < this.minThumbPosition)
 		p = this.minThumbPosition;
 	else if (p > this.maxThumbPosition)

@@ -88,7 +88,7 @@ function init() {
 	s.draw();
 
 	var shandle = s.addMouseIn();
-	shandle.map = s.mapParallel;
+	shandle.map = s.mapParallelDifferential;
 
 	var sliderDisableElem = document.getElementById("sliderDisable");
 	sliderDisableElem.addEventListener("click",
@@ -118,7 +118,7 @@ function init() {
 	k.draw();
 
 	var khandle = k.addMouseIn();
-	khandle.map = k.mapRadial;
+	khandle.map = k.mapVerticalDifferential;
 
 	var knobDisableElem = document.getElementById("knobDisable");
 	knobDisableElem.addEventListener("click",
