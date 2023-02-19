@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefano D'Angelo <zanga.mail@gmail.com>
+ * Copyright (C) 2015, 2023 Stefano D'Angelo <zanga.mail@gmail.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -53,82 +53,83 @@ audioWidgets.widget.addMouseIn = function () {
 
 	// Private
 
-	handle.mousedown = w.ctx.canvas.addEventListener("mousedown",
-		function (event) {
+	handle.mousedown = function (event) {
+		var offset = w.getMouseEventOffset(event);
+		mouseDown = w.mouseIsOver(offset.x, offset.y);
+		if (!mouseDown)
+			return;
+
+		event.preventDefault();
+
+		if (w.disabled)
+			return;
+
+		w.activeIn(true);
+		handle.active = true;
+
+		if (handle.mousedownHook)
+			handle.mousedownHook.call(w,
+				offset.x, offset.y);
+	};
+
+	handle.mousemove = function (event) {
+		var offset = w.getMouseEventOffset(event);
+		var over = w.mouseIsOver(offset.x, offset.y);
+
+		if (handle.hover && !over) {
+			w.hoverIn(false);
+			handle.hover = false;
+		} else if (!handle.hover && over) {
+			w.hoverIn(true);
+			handle.hover = true;
+		}
+
+		if (handle.mousemoveHook)
+			handle.mousemoveHook.call(w,
+				offset.x, offset.y, handle.active,
+				handle.hover);
+	};
+
+	handle.mouseup = function (event) {
+		if (handle.active)
+			w.activeIn(false);
+
+		if (handle.mouseupHook) {
 			var offset = w.getMouseEventOffset(event);
-			mouseDown = w.mouseIsOver(offset.x, offset.y);
-			if (!mouseDown)
-				return;
+			if (w.mouseIsOver(offset.x, offset.y))
+				handle.mouseupHook.call(w,
+					offset.x, offset.y,
+					handle.active);
+		}
 
-			event.preventDefault();
+		handle.active = false;
+		mouseDown = false;
+	};
 
-			if (w.disabled)
-				return;
-
-			w.activeIn(true);
-			handle.active = true;
-
-			if (handle.mousedownHook)
-				handle.mousedownHook.call(w,
-					offset.x, offset.y);
-		});
-
-	handle.mousemove = document.addEventListener("mousemove",
-		function (event) {
-			var offset = w.getMouseEventOffset(event);
-			var over = w.mouseIsOver(offset.x, offset.y);
-
-			if (handle.hover && !over) {
-				w.hoverIn(false);
-				handle.hover = false;
-			} else if (!handle.hover && over) {
-				w.hoverIn(true);
-				handle.hover = true;
-			}
-
-			if (handle.mousemoveHook)
-				handle.mousemoveHook.call(w,
-					offset.x, offset.y, handle.active,
-					handle.hover);
-		});
-
-	handle.mouseup = document.addEventListener("mouseup",
-		function (event) {
-			if (handle.active)
-				w.activeIn(false);
-
-			if (handle.mouseupHook) {
-				var offset = w.getMouseEventOffset(event);
-				if (w.mouseIsOver(offset.x, offset.y))
-					handle.mouseupHook.call(w,
-						offset.x, offset.y,
-						handle.active);
-			}
-
+	handle.blur = function (event) {
+		if (handle.hover) {
+			handle.hover = false;
+			w.hoverIn(false);
+		}
+		if (handle.active) {
 			handle.active = false;
-			mouseDown = false;
-		});
+			w.activeIn(false);
+		}
+		mouseDown = false;
+	};
 
-	handle.blur = document.addEventListener("blur",
-		function (event) {
-			if (handle.hover) {
-				handle.hover = false;
-				w.hoverIn(false);
-			}
-			if (handle.active) {
-				handle.active = false;
-				w.activeIn(false);
-			}
-			mouseDown = false;
-		});
+	handle.disable = function (event) {
+		if (handle.active) {
+			handle.active = false;
+			w.activeIn(false);
+		}
+	};
 
-	handle.disable = w.addEventListener("disable",
-		function (event) {
-			if (handle.active) {
-				handle.active = false;
-				w.activeIn(false);
-			}
-		});
+	w.ctx.canvas.addEventListener("mousedown", handle.mousedown);
+	document.addEventListener("mousemove", handle.mousemove);
+	document.addEventListener("mouseup", handle.mouseup);
+	document.addEventListener("blur", handle.blur);
+	w.addEventListener("disable", handle.disable);
 
 	return handle;
 };
@@ -137,11 +138,11 @@ audioWidgets.widget.removeMouseIn = function (handle) {
 	handle.setActive(false);
 	handle.setHover(false);
 
-	this.ctx.canvas.removeEventListener(handle.mousedown);
-	document.removeEventListener(handle.mousemove);
-	document.removeEventListener(handle.mouseup);
-	document.removeEventListener(handle.blur);
-	this.removeEventListener(handle.disable);
+	this.ctx.canvas.removeEventListener("mousedown", handle.mousedown);
+	document.removeEventListener("mousemove", handle.mousemove);
+	document.removeEventListener("mouseup", handle.mouseup);
+	document.removeEventListener("blur", handle.blur);
+	this.removeEventListener("disable", handle.disable);
 
 	delete handle.active;
 	delete handle.hover;

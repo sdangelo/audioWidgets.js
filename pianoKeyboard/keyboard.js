@@ -99,10 +99,10 @@ audioWidgets.pianoKeyboard.removeKeyboardIn = function (handle) {
 	for (var i = 0; i < handle.keysActive.length; i++)
 		handle.keysActive[i].activeIn(false);
 
-	document.removeEventListener(handle.keydown);
-	document.removeEventListener(handle.keyup);
-	document.removeEventListener(handle.blur);
-	this.removeEventListener(handle.disable);
+	document.removeEventListener("keydown", handle.keydown);
+	document.removeEventListener("keyup", handle.keyup);
+	document.removeEventListener("blur", handle.blur);
+	this.removeEventListener("disable", handle.disable);
 
 	delete handle.keysActive;
 	delete handle.keydown;

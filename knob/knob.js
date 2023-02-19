@@ -116,8 +116,10 @@ audioWidgets.knob.draw = function () {
 	this.ctx.line
 	this.ctx.lineCap = "butt";
 
-	var r1 = 2 / 3 * this.radius;
-	var r2 = (this.radius + r1 + r1) / 3;
+	var r = this.radius - 1;
+
+	var r1 = 2 / 3 * r;
+	var r2 = (r + r1 + r1) / 3;
 
 	var c = Math.cos(this.angle);
 	var s = Math.sin(this.angle);
@@ -125,7 +127,7 @@ audioWidgets.knob.draw = function () {
 	this.ctx.fillStyle = "#cfcfcf";
 	this.ctx.beginPath();
 	this.ctx.moveTo(this.centerX + r2 * c, this.centerY - r2 * s);
-	this.ctx.arc(this.centerX, this.centerY, this.radius,
+	this.ctx.arc(this.centerX, this.centerY, r,
 		     -this.angle, -this.maxAngle, false);
 	this.ctx.lineTo(this.centerX + r2 * Math.cos(this.maxAngle),
 			this.centerY - r2 * Math.sin(this.maxAngle));
@@ -138,7 +140,7 @@ audioWidgets.knob.draw = function () {
 	this.ctx.beginPath();
 	this.ctx.moveTo(this.centerX + r1 * Math.cos(this.minAngle),
 			this.centerY - r1 * Math.sin(this.minAngle));
-	this.ctx.arc(this.centerX, this.centerY, this.radius,
+	this.ctx.arc(this.centerX, this.centerY, r,
 		     -this.minAngle, -this.angle, false);
 	this.ctx.lineTo(this.centerX + r1 * c,
 			this.centerY - r1 * s);
@@ -151,15 +153,15 @@ audioWidgets.knob.draw = function () {
 		
 	this.ctx.strokeStyle = ssOut;
 	this.ctx.beginPath();
-	this.ctx.arc(this.centerX, this.centerY, this.radius - 0.5,
+	this.ctx.arc(this.centerX, this.centerY, r - 0.5,
 		     -this.minAngle, -this.maxAngle, false);
 	this.ctx.stroke();
 
 	this.ctx.strokeStyle = "#000";
 	this.ctx.beginPath();
 	this.ctx.moveTo(this.centerX, this.centerY);
-	this.ctx.lineTo(this.centerX + this.radius * c,
-			this.centerY - this.radius * s);
+	this.ctx.lineTo(this.centerX + r * c,
+			this.centerY - r * s);
 	this.ctx.stroke();
 
 	this.ctx.restore();

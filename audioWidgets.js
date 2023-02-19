@@ -131,38 +131,41 @@ var audioWidgets = {
 			return listener;
 		},
 
-		removeEventListener: function (listener, useCapture) {
-			for (var type in this.listeners) {
-				var l = this.listeners[type];
-				for (var i = 0; i < l.length; i++)
-					if (l[i].listener == listener
-					    && l[i].useCapture == useCapture) {
-						l.slice(i, 1);
-						return;
-					}
-			}
+		removeEventListener: function (type, listener, useCapture) {
+			if (!(type in this.listeners))
+				return;
+			var l = this.listeners[type];
+			for (var i = 0; i < l.length; i++)
+				if (l[i].listener == listener
+				    && l[i].useCapture == useCapture) {
+					l.slice(i, 1);
+					return;
+				}
 		},
 
 		dispatchEvent: function (event) {
+			event.target = this;
+			event.currentTarget = this;
+			
 			if (!(event.type in this.listeners))
-				return false;
+				return true;
 
 			var l = this.listeners[event.type];
 			for (var i = 0; i < l.length; i++)
 				if (l[i].useCapture) {
 					l[i].listener.call(this, event);
 					if (event.defaultPrevented)
-						return true;
+						return false;
 				}
 
 			for (var i = 0; i < l.length; i++)
 				if (!l[i].useCapture) {
 					l[i].listener.call(this, event);
 					if (event.defaultPrevented)
-						return true;
+						return false;
 				}
 
-			return false;
+			return true;
 		}
 	}
 
