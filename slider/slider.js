@@ -75,6 +75,10 @@ audioWidgets.slider.setStep = function (step) {
 audioWidgets.slider.draw = function () {
 	this.ctx.save();
 
+	this.ctx.beginPath();
+	this.ctx.rect(this.x, this.y, this.width, this.height);
+	this.ctx.clip();
+
 	var ssThumb;
 	var ssOn;
 	var ssOff;

@@ -58,6 +58,10 @@ audioWidgets.pianoKeyboard.key.note = NaN;	// MIDI note number
 
 		this.ctx.save();
 
+		this.ctx.beginPath();
+		this.ctx.rect(this.x, this.y, this.width, this.height);
+		this.ctx.clip();
+
 		setStyle.call(this);
 
 		this.ctx.beginPath();
@@ -90,6 +94,10 @@ audioWidgets.pianoKeyboard.key.note = NaN;	// MIDI note number
 		var y3 = this.y + this.height - 0.5;
 
 		this.ctx.save();
+
+		this.ctx.beginPath();
+		this.ctx.rect(this.x, this.y, this.width, this.height);
+		this.ctx.clip();
 
 		setStyle.call(this);
 
@@ -126,6 +134,10 @@ audioWidgets.pianoKeyboard.key.note = NaN;	// MIDI note number
 
 		this.ctx.save();
 
+		this.ctx.beginPath();
+		this.ctx.rect(this.x, this.y, this.width, this.height);
+		this.ctx.clip();
+
 		setStyle.call(this);
 
 		this.ctx.beginPath();
@@ -150,6 +162,10 @@ audioWidgets.pianoKeyboard.key.note = NaN;	// MIDI note number
 	audioWidgets.pianoKeyboard.keyWhiteFull.draw = function () {
 		this.ctx.save();
 
+		this.ctx.beginPath();
+		this.ctx.rect(this.x, this.y, this.width, this.height);
+		this.ctx.clip();
+
 		setStyle.call(this);
 
 		this.ctx.beginPath();
@@ -168,6 +184,10 @@ audioWidgets.pianoKeyboard.keyBlack =
 
 audioWidgets.pianoKeyboard.keyBlack.draw = function () {
 	this.ctx.save();
+
+	this.ctx.beginPath();
+	this.ctx.rect(this.x, this.y, this.width, this.height);
+	this.ctx.clip();
 
 	if (this.disabled)
 		this.ctx.fillStyle = "#444";

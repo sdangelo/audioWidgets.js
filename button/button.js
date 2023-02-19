@@ -24,6 +24,10 @@ audioWidgets.button.toggled = false;
 audioWidgets.button.draw = function () {
 	this.ctx.save();
 
+	this.ctx.beginPath();
+	this.ctx.rect(this.x, this.y, this.width, this.height);
+	this.ctx.clip();
+
 	if (this.toggled) {
 		if (this.disabled) {
 			this.ctx.strokeStyle = "#9f9f9f";
