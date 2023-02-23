@@ -11,6 +11,7 @@
     <script src="pianoKeyboard/pianoKeyboard.js" type="text/javascript"></script>
     <script src="pianoKeyboard/mouse.js" type="text/javascript"></script>
     <script src="pianoKeyboard/keyboard.js" type="text/javascript"></script>
+    <script src="meter/meter.js" type="text/javascript"></script>
     <script type="text/javascript">
 function init() {
 	var widgetCanvas = document.getElementById("widgetCanvas");
@@ -255,6 +256,60 @@ function init() {
 
 	keyb.addMouseIn();
 	keyb.addKeyboardIn(audioWidgets.pianoKeyboard.keyCodeMap25);
+
+	var meterHCanvas = document.getElementById("meterHCanvas");
+	var meterHCtx = meterHCanvas.getContext("2d");
+
+	var mh = Object.create(audioWidgets.meter);
+	mh.init();
+
+	mh.ctx = meterHCtx;
+	mh.x = 0;
+	mh.y = 0;
+	mh.width = meterHCanvas.width;
+	mh.height = meterHCanvas.height;
+
+	mh.setValue(0.5);
+
+	mh.clear();
+	mh.draw();
+
+	var meterVCanvas = document.getElementById("meterVCanvas");
+	var meterVCtx = meterVCanvas.getContext("2d");
+
+	var mv = Object.create(audioWidgets.meter);
+	mv.init();
+
+	mv.ctx = meterVCtx;
+	mv.x = 0;
+	mv.y = 0;
+	mv.width = meterVCanvas.width;
+	mv.height = meterVCanvas.height;
+	mv.vertical = true;
+
+	mv.setValue(0.5);
+
+	mv.clear();
+	mv.draw();
+
+	var meterDisableElem = document.getElementById("meterDisable");
+	meterDisableElem.addEventListener("click",
+		function () {
+			mh.setDisabled(!mh.disabled);
+			mv.setDisabled(!mv.disabled);
+			meterDisableElem.value = mh.disabled ? "Enable" : "Disable";
+		});
+
+	var meterRangeElem = document.getElementById("meterRange");
+	meterRangeElem.addEventListener("input",
+		function () {
+			mh.setValue(meterRangeElem.value);
+			mv.setValue(meterRangeElem.value);
+			mh.clear();
+			mv.clear();
+			mh.draw();
+			mv.draw();
+		});
 }
 
 window.addEventListener("load", init);
@@ -294,6 +349,13 @@ window.addEventListener("load", init);
     <canvas id="keyboardCanvas" width="450" height="150"></canvas>
     <div>
       <input type="button" id="keyboardDisable" value="Disable"/>
+    </div>
+    <h2>Meter</h2>
+    <canvas id="meterHCanvas" width="300" height="20"></canvas>
+    <canvas id="meterVCanvas" width="20" height="300"></canvas>
+    <div>
+      <input type="button" id="meterDisable" value="Disable"/><br>
+      <input type="range" id="meterRange" min="0" max="1" step="any">
     </div>
   </body>
 </html>
