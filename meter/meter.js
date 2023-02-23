@@ -35,12 +35,15 @@ audioWidgets.meter.draw = function () {
 	this.ctx.rect(this.x, this.y, this.width, this.height);
 	this.ctx.clip();
 
-	this.ctx.strokeStyle = "#9f9f9f";
-	this.ctx.fillStyle = this.disabled ? "#dfa667" : "#ef7e00";
-
 	this.ctx.lineCap = "butt";
 	this.ctx.lineWidth = 1;
 
+	this.ctx.fillStyle = "#ffffff";
+	this.beginPath();
+	this.ctx.rect(this.x, this,y, this.width, this.height);
+	this.ctx.fill();
+
+	this.ctx.fillStyle = this.disabled ? "#dfa667" : "#ef7e00";
 	this.ctx.beginPath();
 	if (this.vertical)
 		this.ctx.rect(this.x + 0.5, this.y + 0.5 + (this.height - 1) * (1 - this.value), this.width - 1, this.height - 1);
@@ -48,6 +51,7 @@ audioWidgets.meter.draw = function () {
 		this.ctx.rect(this.x + 0.5, this.y + 0.5, (this.width - 1) * this.value, this.height - 1);
 	this.ctx.fill();
 	
+	this.ctx.strokeStyle = "#9f9f9f";
 	this.ctx.beginPath();
 	this.ctx.rect(this.x + 0.5, this.y + 0.5, this.width - 1, this.height - 1);
 	this.ctx.stroke();
