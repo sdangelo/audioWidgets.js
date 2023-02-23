@@ -39,8 +39,8 @@ audioWidgets.meter.draw = function () {
 	this.ctx.lineWidth = 1;
 
 	this.ctx.fillStyle = "#ffffff";
-	this.beginPath();
-	this.ctx.rect(this.x, this,y, this.width, this.height);
+	this.ctx.beginPath();
+	this.ctx.rect(this.x, this.y, this.width, this.height);
 	this.ctx.fill();
 
 	this.ctx.fillStyle = this.disabled ? "#dfa667" : "#ef7e00";
