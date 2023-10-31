@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefano D'Angelo <zanga.mail@gmail.com>
+ * Copyright (C) 2015, 2023 Stefano D'Angelo <zanga.mail@gmail.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -63,6 +63,8 @@ audioWidgets.pianoKeyboard.keyWhiteMiddle.mouseIsOver = function (x, y) {
 				}
 			};
 		}
+
+		return handle;
 	};
 
 	audioWidgets.pianoKeyboard.removeMouseIn = function (handle) {

@@ -2,6 +2,7 @@
   <head>
     <script src="audioWidgets.js" type="text/javascript"></script>
     <script src="mouse.js" type="text/javascript"></script>
+    <script src="touch.js" type="text/javascript"></script>
     <script src="button/button.js" type="text/javascript"></script>
     <script src="button/mouse.js" type="text/javascript"></script>
     <script src="slider/slider.js" type="text/javascript"></script>
@@ -10,6 +11,7 @@
     <script src="knob/mouse.js" type="text/javascript"></script>
     <script src="pianoKeyboard/pianoKeyboard.js" type="text/javascript"></script>
     <script src="pianoKeyboard/mouse.js" type="text/javascript"></script>
+    <script src="pianoKeyboard/touch.js" type="text/javascript"></script>
     <script src="pianoKeyboard/keyboard.js" type="text/javascript"></script>
     <script src="meter/meter.js" type="text/javascript"></script>
     <script type="text/javascript">
@@ -29,7 +31,8 @@ function init() {
 	w.clear();
 	w.draw();
 
-	w.addMouseIn();
+	var h = w.addMouseIn();
+	w.addTouchIn(h);
 
 	var widgetDisableElem = document.getElementById("widgetDisable");
 	widgetDisableElem.addEventListener("click",
@@ -53,7 +56,8 @@ function init() {
 	b.clear();
 	b.draw();
 
-	b.addMouseIn();
+	h = b.addMouseIn();
+	b.addTouchIn(h);
 
 	b.addEventListener("click",
 		function () {
@@ -90,6 +94,7 @@ function init() {
 
 	var shandle = s.addMouseIn();
 	shandle.map = s.mapParallelDifferential;
+	s.addTouchIn(shandle);
 
 	var sliderDisableElem = document.getElementById("sliderDisable");
 	sliderDisableElem.addEventListener("click",
@@ -120,6 +125,7 @@ function init() {
 
 	var khandle = k.addMouseIn();
 	khandle.map = k.mapVerticalDifferential;
+	k.addTouchIn(khandle);
 
 	var knobDisableElem = document.getElementById("knobDisable");
 	knobDisableElem.addEventListener("click",
@@ -145,7 +151,8 @@ function init() {
 	kL.clear();
 	kL.draw();
 
-	kL.addMouseIn();
+	h = kL.addMouseIn();
+	kL.addTouchIn(h);
 
 	var keyRightCanvas = document.getElementById("keyRightCanvas");
 	var keyRightCtx = keyRightCanvas.getContext("2d");
@@ -164,7 +171,8 @@ function init() {
 	kR.clear();
 	kR.draw();
 
-	kR.addMouseIn();
+	h = kR.addMouseIn();
+	kR.addTouchIn(h);
 
 	var keyMiddleCanvas = document.getElementById("keyMiddleCanvas");
 	var keyMiddleCtx = keyMiddleCanvas.getContext("2d");
@@ -184,7 +192,8 @@ function init() {
 	kM.clear();
 	kM.draw();
 
-	kM.addMouseIn();
+	h = kM.addMouseIn();
+	kM.addTouchIn(h);
 
 	var keyFullCanvas = document.getElementById("keyFullCanvas");
 	var keyFullCtx = keyFullCanvas.getContext("2d");
@@ -201,7 +210,8 @@ function init() {
 	kF.clear();
 	kF.draw();
 
-	kF.addMouseIn();
+	h = kF.addMouseIn();
+	kF.addTouchIn(h);
 
 	var keyBlackCanvas = document.getElementById("keyBlackCanvas");
 	var keyBlackCtx = keyBlackCanvas.getContext("2d");
@@ -218,7 +228,8 @@ function init() {
 	kB.clear();
 	kB.draw();
 
-	kB.addMouseIn();
+	h = kB.addMouseIn();
+	kB.addTouchIn(h);
 
 	var keysDisableElem = document.getElementById("keysDisable");
 	keysDisableElem.addEventListener("click",
@@ -254,8 +265,9 @@ function init() {
 			keyboardDisableElem.value = keyb.disabled ? "Enable" : "Disable";
 		});
 
-	keyb.addMouseIn();
+	h = keyb.addMouseIn();
 	keyb.addKeyboardIn(audioWidgets.pianoKeyboard.keyCodeMap25);
+	keyb.addTouchIn(h);
 
 	var meterHCanvas = document.getElementById("meterHCanvas");
 	var meterHCtx = meterHCanvas.getContext("2d");

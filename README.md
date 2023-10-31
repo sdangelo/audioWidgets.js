@@ -6,7 +6,7 @@ audioWidgets.html.
 
 ## TODO:
 
-* add touch events;
+* proper touch events;
 * add Web MIDI API events;
 * use polyfills where needed?
 * review API;

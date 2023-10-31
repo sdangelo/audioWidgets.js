@@ -106,6 +106,14 @@ audioWidgets.widget.addMouseIn = function () {
 		mouseDown = false;
 	};
 
+	handle.pointerdown = function (event) {
+		event.currentTarget.setPointerCapture(event.pointerId);
+	};
+
+	handle.pointerup = function (event) {
+		event.currentTarget.releasePointerCapture(event.pointerId);
+	};
+
 	handle.blur = function (event) {
 		if (handle.hover) {
 			handle.hover = false;
@@ -126,8 +134,10 @@ audioWidgets.widget.addMouseIn = function () {
 	};
 
 	w.ctx.canvas.addEventListener("mousedown", handle.mousedown);
-	document.addEventListener("mousemove", handle.mousemove);
-	document.addEventListener("mouseup", handle.mouseup);
+	w.ctx.canvas.addEventListener("mousemove", handle.mousemove);
+	w.ctx.canvas.addEventListener("mouseup", handle.mouseup);
+	w.ctx.canvas.addEventListener("pointerdown", handle.pointerdown);
+	w.ctx.canvas.addEventListener("pointerup", handle.pointerup);
 	document.addEventListener("blur", handle.blur);
 	w.addEventListener("disable", handle.disable);
 
@@ -139,8 +149,10 @@ audioWidgets.widget.removeMouseIn = function (handle) {
 	handle.setHover(false);
 
 	this.ctx.canvas.removeEventListener("mousedown", handle.mousedown);
-	document.removeEventListener("mousemove", handle.mousemove);
-	document.removeEventListener("mouseup", handle.mouseup);
+	this.ctx.canvas.removeEventListener("mousemove", handle.mousemove);
+	this.ctx.canvas.removeEventListener("mouseup", handle.mouseup);
+	this.ctx.canvas.removeEventListener("pointerdown", handle.pointerdown);
+	this.ctx.canvas.removeEventListener("pointerup", handle.pointerup);
 	document.removeEventListener("blur", handle.blur);
 	this.removeEventListener("disable", handle.disable);
 
@@ -152,6 +164,8 @@ audioWidgets.widget.removeMouseIn = function (handle) {
 	delete handle.mousemoveHook;
 	delete handle.mouseup;
 	delete handle.mouseupHook;
+	delete handle.pointerdown;
+	delete handle.pointerup;
 	delete handle.blur;
 	delete handle.disable;
 };
