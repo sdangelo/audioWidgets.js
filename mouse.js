@@ -134,7 +134,7 @@ audioWidgets.widget.addMouseIn = function () {
 	};
 
 	w.ctx.canvas.addEventListener("mousedown", handle.mousedown);
-	w.ctx.canvas.addEventListener("mousemove", handle.mousemove);
+	document.addEventListener("mousemove", handle.mousemove);
 	w.ctx.canvas.addEventListener("mouseup", handle.mouseup);
 	w.ctx.canvas.addEventListener("pointerdown", handle.pointerdown);
 	w.ctx.canvas.addEventListener("pointerup", handle.pointerup);
@@ -149,7 +149,7 @@ audioWidgets.widget.removeMouseIn = function (handle) {
 	handle.setHover(false);
 
 	this.ctx.canvas.removeEventListener("mousedown", handle.mousedown);
-	this.ctx.canvas.removeEventListener("mousemove", handle.mousemove);
+	document.canvas.removeEventListener("mousemove", handle.mousemove);
 	this.ctx.canvas.removeEventListener("mouseup", handle.mouseup);
 	this.ctx.canvas.removeEventListener("pointerdown", handle.pointerdown);
 	this.ctx.canvas.removeEventListener("pointerup", handle.pointerup);
