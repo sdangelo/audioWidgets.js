@@ -7,6 +7,7 @@ audioWidgets.html.
 ## TODO:
 
 * https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio;
+* differential mapping + step = sucks;
 * proper touch events;
 * add Web MIDI API events;
 * use polyfills where needed?
