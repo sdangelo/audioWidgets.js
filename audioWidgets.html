@@ -103,6 +103,17 @@ function init() {
 			sliderDisableElem.value = s.disabled ? "Enable" : "Disable";
 		});
 
+	var sliderStepsElem = document.getElementById("sliderSteps");
+	sliderStepsElem.addEventListener("change",
+		function () {
+			var steps = parseInt(sliderStepsElem.value);
+			s.step = steps == 0 ? 0 : 1 / steps;
+			s.update();
+			s.clear();
+			s.draw();
+		});
+	sliderStepsElem.dispatchEvent(new Event("change"));
+
 	var knobCanvas = document.getElementById("knobCanvas");
 	var knobCtx = knobCanvas.getContext("2d");
 
@@ -133,6 +144,17 @@ function init() {
 			k.setDisabled(!k.disabled);
 			knobDisableElem.value = k.disabled ? "Enable" : "Disable";
 		});
+
+	var knobStepsElem = document.getElementById("knobSteps");
+	knobStepsElem.addEventListener("change",
+		function () {
+			var steps = parseInt(knobStepsElem.value);
+			k.step = steps == 0 ? 0 : 1 / steps;
+			k.update();
+			k.clear();
+			k.draw();
+		});
+	knobStepsElem.dispatchEvent(new Event("change"));
 
 	var keyLeftCanvas = document.getElementById("keyLeftCanvas");
 	var keyLeftCtx = keyLeftCanvas.getContext("2d");
@@ -342,11 +364,13 @@ window.addEventListener("load", init);
     <canvas id="sliderCanvas" width="300" height="20"></canvas>
     <div>
       <input type="button" id="sliderDisable" value="Disable"/>
+      <input type="number" id="sliderSteps" value="0" min="0" max="100"/>
     </div>
     <h2>Knob</h2>
     <canvas id="knobCanvas" width="75" height="75"></canvas>
     <div>
       <input type="button" id="knobDisable" value="Disable"/>
+      <input type="number" id="knobSteps" value="0" min="0" max="100"/>
     </div>
     <h2>Single piano keys</h2>
     <canvas id="keyLeftCanvas" width="25" height="100"></canvas>

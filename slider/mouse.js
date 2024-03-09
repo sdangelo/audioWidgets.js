@@ -24,18 +24,19 @@
 		var initialY;
 		var prevX;
 		var prevY;
+		var vPosition;
 
 		function move(x, y) {
 			if (handle.map) {
-				var thumbPosition =
+				vPosition =
 					handle.map.call(this, x, y,
 							initialX, initialY,
-							prevX, prevY);
-				if (thumbPosition != this.thumbPosition
-				    && this.thumbPositionIsValid(thumbPosition))
+							prevX, prevY, vPosition);
+				if (vPosition != this.thumbPosition
+				    && this.thumbPositionIsValid(vPosition))
 				{
 					var t = this.thumbPosition;
-					this.setThumbPosition(thumbPosition);
+					this.setThumbPosition(vPosition);
 					if (t != this.thumbPosition) {
 						this.clear();
 						this.draw();
@@ -54,6 +55,7 @@
 			initialY = y;
 			prevX = x;
 			prevY = y;
+			vPosition = this.thumbPosition;
 			move.call(this, x, y);
 		};
 
@@ -66,7 +68,7 @@
 	};
 })();
 
-audioWidgets.slider.mapParallel = function (x, y, initialX, initialY, prevX, prevY) {
+audioWidgets.slider.mapParallel = function (x, y, initialX, initialY, prevX, prevY, vPosition) {
 	var p = this.vertical ? this.height - y : x;
 	if (p < this.minThumbPosition)
 		p = this.minThumbPosition;
@@ -75,8 +77,8 @@ audioWidgets.slider.mapParallel = function (x, y, initialX, initialY, prevX, pre
 	return p;
 };
 
-audioWidgets.slider.mapParallelDifferential = function (x, y, initialX, initialY, prevX, prevY) {
-	var p = this.vertical ? this.thumbPosition - y + prevY: this.thumbPosition + x - prevX;
+audioWidgets.slider.mapParallelDifferential = function (x, y, initialX, initialY, prevX, prevY, vPosition) {
+	var p = this.vertical ? vPosition - y + prevY: vPosition + x - prevX;
 	if (p < this.minThumbPosition)
 		p = this.minThumbPosition;
 	else if (p > this.maxThumbPosition)
