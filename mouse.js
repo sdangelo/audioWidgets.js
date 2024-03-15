@@ -70,6 +70,12 @@ audioWidgets.widget.addMouseIn = function () {
 		if (handle.mousedownHook)
 			handle.mousedownHook.call(w,
 				offset.x, offset.y);
+
+		function captureClick(e) {
+			e.stopPropagation();
+			window.removeEventListener("click", captureClick, true);
+		}
+		window.addEventListener("click", captureClick, true);
 	};
 
 	handle.mousemove = function (event) {
