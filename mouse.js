@@ -20,8 +20,8 @@ audioWidgets.widget.mouseIsOver = function (x, y) {
 
 audioWidgets.widget.getMouseEventOffset = function (event) {
 	var rect = this.ctx.canvas.getBoundingClientRect();
-	var x = event.clientX - rect.left - this.x;
-	var y = event.clientY - rect.top - this.y;
+	var x = (event.clientX - rect.left) * this.ctx.canvas.width / rect.width - this.x;
+	var y = (event.clientY - rect.top) * this.ctx.canvas.height / rect.height - this.y;
 	return { x: x, y: y };
 };
 
