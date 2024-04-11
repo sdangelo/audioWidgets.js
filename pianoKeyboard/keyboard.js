@@ -78,7 +78,7 @@ audioWidgets.pianoKeyboard.addKeyboardIn = function (keyCodeMap) {
 			}
 		});
 
-	handle.blur = document.addEventListener("blur",
+	handle.blur = window.addEventListener("blur",
 		function (event) {
 			for (var i = 0; i < handle.keysActive.length; i++)
 				handle.keysActive[i].activeIn(false);
@@ -101,7 +101,7 @@ audioWidgets.pianoKeyboard.removeKeyboardIn = function (handle) {
 
 	document.removeEventListener("keydown", handle.keydown);
 	document.removeEventListener("keyup", handle.keyup);
-	document.removeEventListener("blur", handle.blur);
+	window.removeEventListener("blur", handle.blur);
 	this.removeEventListener("disable", handle.disable);
 
 	delete handle.keysActive;
