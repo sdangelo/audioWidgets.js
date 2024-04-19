@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Stefano D'Angelo <zanga.mail@gmail.com>
+ * Copyright (C) 2023, 2024 Stefano D'Angelo <zanga.mail@gmail.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,12 +16,24 @@
 
 // TODO: this just redirects to mouse events, it should be properly done...
 
+// Workaround: WKWebView dispatches touchstart instead of touchend with 4 finger touch gestures
+(function () {
+	audioWidgets.iOSTouchEndBugWorkaroundLast = 0;
+	addEventListener("gestureend", function () {
+		audioWidgets.iOSTouchEndBugWorkaroundLast = Date.now();
+	});
+})();
+
 audioWidgets.widget.addTouchIn = function (mouseHandle) {
 	var handle = { mouseHandle: mouseHandle };
 
 	var w = this;
 
 	handle.touchstart = function (event) {
+		if (Date.now() - audioWidgets.iOSTouchEndBugWorkaroundLast < 10) {
+			handle.touchend(event);
+			return;
+		}
 		event.preventDefault();
 		for (var i = 0; i < event.changedTouches.length; i++) {
 			var e = {
