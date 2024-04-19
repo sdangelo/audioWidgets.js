@@ -16,7 +16,8 @@
 
 // TODO: this just redirects to mouse events, it should be properly done...
 
-// Workaround: WKWebView dispatches touchstart instead of touchend with 4 finger touch gestures
+// Workaround: WKWebView dispatches touchstart instead of touchend with 4 finger
+// touch gestures
 (function () {
 	audioWidgets.iOSTouchEndBugWorkaroundLast = 0;
 	addEventListener("gestureend", function () {
