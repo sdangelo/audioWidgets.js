@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefano D'Angelo <zanga.mail@gmail.com>
+ * Copyright (C) 2015, 2024 Stefano D'Angelo <zanga.mail@gmail.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,18 +15,21 @@
  */
 
 (function () {
-	var f = audioWidgets.widget.addMouseIn;
+	var f = audioWidgets.widget.addPointerIn;
 
-	audioWidgets.button.addMouseIn = function () {
+	audioWidgets.button.addPointerIn = function () {
 		var handle = f.call(this);
 
-		handle.mouseupHook = function (x, y, active) {
-			if (active) {
-				var e = new CustomEvent("click",
-						{ bubbles: true,
-						  cancelable: true });
-				this.dispatchEvent(e);
-			}
+		handle.pointerupHook = function (id, x, y, active, hover) {
+			if (!(active && hover))
+				return;
+			for (p in handle.pointers)
+				if (handle.pointers[p].active)
+					return;
+			var e = new CustomEvent("click",
+					{ bubbles: true,
+					  cancelable: true });
+			this.dispatchEvent(e);
 		};
 
 		return handle;

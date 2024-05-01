@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefano D'Angelo <zanga.mail@gmail.com>
+ * Copyright (C) 2015, 2024 Stefano D'Angelo <zanga.mail@gmail.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -166,6 +166,17 @@ var audioWidgets = {
 				}
 
 			return true;
+		},
+
+		isOver: function (x, y) {
+			return x > 0 && y > 0 && x < this.width && y < this.height;
+		},
+
+		getOffset: function (clientX, clientY) {
+			var rect = this.ctx.canvas.getBoundingClientRect();
+			var x = (clientX - rect.left) * this.ctx.canvas.width / rect.width - this.x;
+			var y = (clientY - rect.top) * this.ctx.canvas.height / rect.height - this.y;
+			return { x: x, y: y };
 		}
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Stefano D'Angelo <zanga.mail@gmail.com>
+ * Copyright (C) 2015, 2024 Stefano D'Angelo <zanga.mail@gmail.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -359,6 +359,22 @@ audioWidgets.pianoKeyboard.update = function () {
 audioWidgets.pianoKeyboard.draw = function () {
 	for (var i = 0; i < this.keys.length; i++)
 		this.keys[i].draw();
+};
+
+audioWidgets.pianoKeyboard.keyWhiteLeft.isOver = function (x, y) {
+	return x > 0 && y > 0 && x < this.width && y < this.height
+	       && (y >= this.yC * this.height || x < this.xE * this.width);
+};
+
+audioWidgets.pianoKeyboard.keyWhiteRight.isOver = function (x, y) {
+	return x > 0 && y > 0 && x < this.width && y < this.height
+	       && (y >= this.yC * this.height || x > this.xB * this.width);
+};
+
+audioWidgets.pianoKeyboard.keyWhiteMiddle.isOver = function (x, y) {
+	return x > 0 && y > 0 && x < this.width && y < this.height
+	       && (y >= this.yC * this.height
+		   || (x > this.xB * this.width && x < this.xE * this.width));
 };
 
 audioWidgets.pianoKeyboard.createOctave = function () {

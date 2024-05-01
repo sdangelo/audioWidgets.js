@@ -14,29 +14,21 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-audioWidgets.knob.mouseIsOver = function (x, y) {
-	x -= this.radius;
-	y -= this.radius;
-	return x * x + y * y < this.radius * this.radius;
-};
-
 (function () {
-	var f = audioWidgets.widget.addMouseIn;
+	var f = audioWidgets.widget.addPointerIn;
 
-	audioWidgets.knob.addMouseIn = function () {
+	audioWidgets.knob.addPointerIn = function () {
 		var handle = f.call(this);
 
-		var initialX;
-		var initialY;
-		var prevX;
-		var prevY;
+		var pointers = {};
 		var vValue;
 
-		function move(x, y) {
+		function move(id, x, y) {
 			if (handle.map) {
 				var r = handle.map.call(this, x, y,
-							initialX, initialY,
-							prevX, prevY, vValue);
+						pointers[id].prevX,
+						pointers[id].prevY,
+						vValue);
 				if ("angle" in r) {
 					if (r.angle != this.angle
 					    && this.angleIsValid(r.angle)) {
@@ -65,32 +57,37 @@ audioWidgets.knob.mouseIsOver = function (x, y) {
 					}
 				}
 			}
-			prevX = x;
-			prevY = y;
+			pointers[id].prevX = x;
+			pointers[id].prevY = y;
 		}
 
-		handle.mousedownHook = function (x, y) {
+		handle.pointerdownHook = function (id, x, y) {
 			x -= this.radius;
 			y -= this.radius;
-			initialX = x;
-			initialY = y;
-			prevX = x;
-			prevY = y;
+			pointers[id] = { prevX: x, prevY: y };
 			vValue = this.value;
-			move.call(this, x, y);
+			move.call(this, id, x, y);
 		};
 
-		handle.mousemoveHook = function (x, y, active, hover) {
+		handle.pointermoveHook = function (id, x, y, active, hover) {
 			if (active)
-				move.call(this, x - this.radius,
+				move.call(this, id, x - this.radius,
 					  y - this.radius);
+		};
+
+		handle.pointerupHook = function (id, x, y, active, hover) {
+			delete pointers[id];
+		};
+
+		handle.pointercancelHook = function (id) {
+			delete pointers[id];
 		};
 
 		return handle;
 	};
 })();
 
-audioWidgets.knob.mapRadial = function (x, y, initialX, initialY, prevX, prevY, vValue) {
+audioWidgets.knob.mapRadial = function (x, y, prevX, prevY, vValue) {
 	var angle = Math.atan2(-y, x);
 	if (angle < 0)
 		angle += Math.PI + Math.PI;
@@ -116,7 +113,7 @@ audioWidgets.knob.mapRadial = function (x, y, initialX, initialY, prevX, prevY, 
 	return { angle: angle };
 };
 
-audioWidgets.knob.mapVerticalDifferential = function (x, y, initialX, initialY, prevX, prevY, vValue) {
+audioWidgets.knob.mapVerticalDifferential = function (x, y, prevX, prevY, vValue) {
 	var k = 0.5 * this.height;
 	if (this.maxAngle > this.minAngle)
 		k *= this.minAngle - this.maxAngle + Math.PI + Math.PI;

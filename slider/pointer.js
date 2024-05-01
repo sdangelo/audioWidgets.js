@@ -15,23 +15,21 @@
  */
 
 (function () {
-	var f = audioWidgets.widget.addMouseIn;
+	var f = audioWidgets.widget.addPointerIn;
 
-	audioWidgets.slider.addMouseIn = function () {
+	audioWidgets.slider.addPointerIn = function () {
 		var handle = f.call(this);
 
-		var initialX;
-		var initialY;
-		var prevX;
-		var prevY;
+		var pointers = {};
 		var vPosition;
 
-		function move(x, y) {
+		function move(id, x, y) {
 			if (handle.map) {
 				vPosition =
 					handle.map.call(this, x, y,
-							initialX, initialY,
-							prevX, prevY, vPosition);
+						pointers[id].prevX,
+						pointers[id].prevY,
+						vPosition);
 				if (vPosition != this.thumbPosition
 				    && this.thumbPositionIsValid(vPosition))
 				{
@@ -46,29 +44,34 @@
 					}
 				}
 			}
-			prevX = x;
-			prevY = y;
+			pointers[id].prevX = x;
+			pointers[id].prevY = y;
 		}
 
-		handle.mousedownHook = function (x, y) {
-			initialX = x;
-			initialY = y;
-			prevX = x;
-			prevY = y;
+		handle.pointerdownHook = function (id, x, y) {
+			pointers[id] = { prevX: x, prevY: y };
 			vPosition = this.thumbPosition;
-			move.call(this, x, y);
+			move.call(this, id, x, y);
 		};
 
-		handle.mousemoveHook = function (x, y, active, hover) {
+		handle.pointermoveHook = function (id, x, y, active, hover) {
 			if (active)
-				move.call(this, x, y);
+				move.call(this, id, x, y);
+		};
+
+		handle.pointerupHook = function (id, x, y, active, hover) {
+			delete pointers[id];
+		};
+
+		handle.pointercancelHook = function (id) {
+			delete pointers[id];
 		};
 
 		return handle;
 	};
 })();
 
-audioWidgets.slider.mapParallel = function (x, y, initialX, initialY, prevX, prevY, vPosition) {
+audioWidgets.slider.mapParallel = function (x, y, prevX, prevY, vPosition) {
 	var p = this.vertical ? this.height - y : x;
 	if (p < this.minThumbPosition)
 		p = this.minThumbPosition;
@@ -77,7 +80,7 @@ audioWidgets.slider.mapParallel = function (x, y, initialX, initialY, prevX, pre
 	return p;
 };
 
-audioWidgets.slider.mapParallelDifferential = function (x, y, initialX, initialY, prevX, prevY, vPosition) {
+audioWidgets.slider.mapParallelDifferential = function (x, y, prevX, prevY, vPosition) {
 	var p = this.vertical ? vPosition - y + prevY: vPosition + x - prevX;
 	if (p < this.minThumbPosition)
 		p = this.minThumbPosition;

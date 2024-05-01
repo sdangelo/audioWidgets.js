@@ -168,3 +168,9 @@ audioWidgets.knob.draw = function () {
 
 	this.ctx.restore();
 };
+
+audioWidgets.knob.isOver = function (x, y) {
+	x -= this.radius;
+	y -= this.radius;
+	return x * x + y * y < this.radius * this.radius;
+};
