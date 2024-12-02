@@ -78,8 +78,10 @@ var audioWidgets = {
 		setDisabled: function (disabled) {
 			if (this.disabled != disabled) {
 				this.disabled = disabled;
-				this.clear();
-				this.draw();
+				if (this.ctx) {
+					this.clear();
+					this.draw();
+				}
 				var e = new CustomEvent(disabled ? "disable"
 								 : "enable");
 				this.dispatchEvent(e);
