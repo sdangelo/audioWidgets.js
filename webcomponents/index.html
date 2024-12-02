@@ -8,6 +8,8 @@
 		<script src="../button/button.js"></script>
 		<script src="../button/pointer.js"></script>
 		<script type="module" src="button-wc.js"></script>
+		<script src="../meter/meter.js"></script>
+		<script type="module" src="meter-wc.js"></script>
 		<script>
 function init() {
 	var widget = document.getElementById("widget");
@@ -33,6 +35,25 @@ function init() {
 			//button.setAttribute("disabled", disabled ? "false" : "true");
 			button.disabled = disabled ? false : true;
 		});
+
+	var meterH = document.getElementById("meterH");
+	var meterV = document.getElementById("meterV");
+	var meterDisable = document.getElementById("meterDisable");
+	meterDisable.addEventListener("click",
+		function () {
+			var disabled = meterDisable.value == "Enable";
+			meterDisable.value = disabled ? "Disable" : "Enable";
+			//meterH.setAttribute("disabled", disabled ? "false" : "true");
+			meterH.disabled = disabled ? false : true;
+			//meterV.setAttribute("disabled", disabled ? "false" : "true");
+			meterV.disabled = disabled ? false : true;
+		});
+	var meterRange = document.getElementById("meterRange");
+	meterRange.addEventListener("input",
+		function () {
+			meterH.setAttribute("value", meterRange.value);
+			meterV.setAttribute("value", meterRange.value);
+		});
 }
 
 window.addEventListener("load", init);
@@ -48,6 +69,13 @@ window.addEventListener("load", init);
 		<aw-button id="button" width="100" height="30"></aw-button>
 		<div>
 			<input type="button" id="buttonDisable" value="Disable">
+		</div>
+		<h2>Meter</h2>
+		<aw-meter id="meterH" width="300" height="20"></aw-meter>
+		<aw-meter id="meterV" width="20" height="300" vertical></aw-meter>
+		<div>
+			<input type="button" id="meterDisable" value="Disable"/><br>
+			<input type="range" id="meterRange" min="0" max="1" step="any">
 		</div>
 	</body>
 </html>
