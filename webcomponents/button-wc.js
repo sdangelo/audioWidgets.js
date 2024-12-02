@@ -87,6 +87,14 @@ class AWButton extends HTMLElement {
 	set disabled(value) {
 		this.setAttribute("disabled", "" + value);
 	}
+
+	get toggled() {
+		return this.widget.toggled;
+	}
+
+	set toggled(value) {
+		this.setAttribute("toggled", "" + value);
+	}
 }
 
 customElements.define("aw-button", AWButton);

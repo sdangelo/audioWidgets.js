@@ -8,6 +8,13 @@
 		<script src="../button/button.js"></script>
 		<script src="../button/pointer.js"></script>
 		<script type="module" src="button-wc.js"></script>
+		<script src="../slider/slider.js"></script>
+		<script src="../slider/pointer.js"></script>
+		<script type="module" src="slider-wc.js"></script>
+		<script src="../knob/knob.js"></script>
+		<script src="../knob/pointer.js"></script>
+		<script type="module" src="knob-wc.js"></script>
+		<script src="../meter/meter.js"></script>
 		<script src="../meter/meter.js"></script>
 		<script type="module" src="meter-wc.js"></script>
 		<script>
@@ -23,10 +30,6 @@ function init() {
 		});
 
 	var button = document.getElementById("button");
-	button.addEventListener("click",
-		function () {
-			button.setAttribute("toggled", button.getAttribute("toggled") == "true" ? "false" : "true");
-		});
 	var buttonDisable = document.getElementById("buttonDisable");
 	buttonDisable.addEventListener("click",
 		function () {
@@ -35,10 +38,55 @@ function init() {
 			//button.setAttribute("disabled", disabled ? "false" : "true");
 			button.disabled = disabled ? false : true;
 		});
+	button.addEventListener("click",
+		function () {
+			button.toggled = !button.toggled;
+		});
+
+	var slider = document.getElementById("slider");
+	var sliderDisable = document.getElementById("sliderDisable");
+	var sliderSteps = document.getElementById("sliderSteps");
+	sliderDisable.addEventListener("click",
+		function () {
+			var disabled = sliderDisable.value == "Enable";
+			sliderDisable.value = disabled ? "Disable" : "Enable";
+			//slider.setAttribute("disabled", disabled ? "false" : "true");
+			slider.disabled = disabled ? false : true;
+		});
+	sliderSteps.addEventListener("input",
+		function () {
+			slider.step = sliderSteps.value == 0 ? 0 : 1 / sliderSteps.value;
+		});
+	slider.addEventListener("input",
+		function () {
+			console.log("slider: " + slider.value);
+		});
+	slider.step = sliderSteps.value == 0 ? 0 : 1 / sliderSteps.value;
+
+	var knob = document.getElementById("knob");
+	var knobDisable = document.getElementById("knobDisable");
+	var knobSteps = document.getElementById("knobSteps");
+	knobDisable.addEventListener("click",
+		function () {
+			var disabled = knobDisable.value == "Enable";
+			knobDisable.value = disabled ? "Disable" : "Enable";
+			//knob.setAttribute("disabled", disabled ? "false" : "true");
+			knob.disabled = disabled ? false : true;
+		});
+	knobSteps.addEventListener("input",
+		function () {
+			knob.step = knobSteps.value == 0 ? 0 : 1 / knobSteps.value;
+		});
+	knob.addEventListener("input",
+		function () {
+			console.log("knob: " + knob.value);
+		});
+	knob.step = knobSteps.value == 0 ? 0 : 1 / knobSteps.value;
 
 	var meterH = document.getElementById("meterH");
 	var meterV = document.getElementById("meterV");
 	var meterDisable = document.getElementById("meterDisable");
+	var meterRange = document.getElementById("meterRange");
 	meterDisable.addEventListener("click",
 		function () {
 			var disabled = meterDisable.value == "Enable";
@@ -48,12 +96,13 @@ function init() {
 			//meterV.setAttribute("disabled", disabled ? "false" : "true");
 			meterV.disabled = disabled ? false : true;
 		});
-	var meterRange = document.getElementById("meterRange");
 	meterRange.addEventListener("input",
 		function () {
-			meterH.setAttribute("value", meterRange.value);
-			meterV.setAttribute("value", meterRange.value);
+			meterH.value = meterRange.value;
+			meterV.value = meterRange.value;
 		});
+	meterH.value = meterRange.value;
+	meterV.value = meterRange.value;
 }
 
 window.addEventListener("load", init);
@@ -70,11 +119,23 @@ window.addEventListener("load", init);
 		<div>
 			<input type="button" id="buttonDisable" value="Disable">
 		</div>
+		<h2>Slider</h2>
+		<aw-slider id="slider" width="300" height="20" pointer-map="parallel-differential"></aw-slider>
+		<div>
+			<input type="button" id="sliderDisable" value="Disable">
+			<input type="number" id="sliderSteps" value="0" min="0" max="100">
+		</div>
+		<h2>Knob</h2>
+		<aw-knob id="knob" width="75" height="75" pointer-map="vertical-differential"></aw-knob>
+		<div>
+			<input type="button" id="knobDisable" value="Disable">
+			<input type="number" id="knobSteps" value="0" min="0" max="100">
+		</div>
 		<h2>Meter</h2>
 		<aw-meter id="meterH" width="300" height="20"></aw-meter>
 		<aw-meter id="meterV" width="20" height="300" vertical></aw-meter>
 		<div>
-			<input type="button" id="meterDisable" value="Disable"/><br>
+			<input type="button" id="meterDisable" value="Disable"><br>
 			<input type="range" id="meterRange" min="0" max="1" step="any">
 		</div>
 	</body>

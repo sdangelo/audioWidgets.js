@@ -1,6 +1,6 @@
-class AWMeter extends HTMLElement {
+class AWSlider extends HTMLElement {
 	static get observedAttributes() {
-		return ["width", "height", "disabled", "value", "vertical"];
+		return ["width", "height", "disabled", "value", "step", "vertical", "thumb-width", "pointer-map"];
 	}
 
 	constructor() {
@@ -8,13 +8,23 @@ class AWMeter extends HTMLElement {
 		this.width = 300;
 		this.height = 150;
 		this._disabled = false;
-		this.widget = Object.create(audioWidgets.meter);
+		this.widget = Object.create(audioWidgets.slider);
 		this.widget.init();
 		this.widget.x = 0;
 		this.widget.y = 0;
 		this.widget.setDisabled(this._disabled);
 		this.widget.setValue(0.5);
+		this.widget.setStep(0);
 		this.widget.vertical = false;
+		this.widget.thumbWidth = 10;
+		this.pointerMap = "parallel";
+		let _self = this;
+		this.widget.addEventListener("input", function (e) {
+			e.stopPropagation();
+			e = new CustomEvent("input",
+				{ bubbles: true } );
+			_self.dispatchEvent(e);
+		});
 	}
 
 	resize() {
@@ -30,8 +40,32 @@ class AWMeter extends HTMLElement {
 	update() {
 		if (!this.shadow)
 			return;
+		this.widget.update();
 		this.widget.clear();
 		this.widget.draw();
+	}
+
+	_pointerMapCustom(x, y, prevX, prevY, vPosition) {
+		return this.pointerMapCustom(x, y, prevX, prevY, vPosition);
+	}
+
+	updatePointerMap() {
+		if (!this.pointerHandle)
+			return;
+		switch (this.pointerMap) {
+		case "parallel":
+			this.pointerHandle.map = audioWidgets.slider.mapParallel;
+			break;
+		case "parallel-differential":
+			this.pointerHandle.map = audioWidgets.slider.mapParallelDifferential;
+			break;
+		case "custom":
+			this.pointerHandle.map = this._pointerMapCustom;
+			break;
+		default:
+			this.pointerHandle.map = null;
+			break;
+		}
 	}
 
 	connectedCallback() {
@@ -39,8 +73,9 @@ class AWMeter extends HTMLElement {
 		this.canvas = document.createElement("canvas");
 		this.shadow.appendChild(this.canvas);
 		this.widget.ctx = this.canvas.getContext("2d");
-		this.widget.addPointerIn();
+		this.pointerHandle = this.widget.addPointerIn();
 		this.resize();
+		this.updatePointerMap();
 	}
 
 	attributeChangedCallback(property, oldValue, newValue) {
@@ -73,9 +108,27 @@ class AWMeter extends HTMLElement {
 				this.update();
 			}
 			break;
+		case "step":
+			var v = parseFloat(newValue);
+			if (!isNaN(v)) {
+				this.widget.setStep(Math.max(v, 0));
+				this.update();
+			}
+			break;
 		case "vertical":
 			this.widget.vertical = newValue == "" || newValue == "true";
 			this.update();
+			break;
+		case "thumb-width":
+			var v = parseInt(newValue);
+			if (!isNaN(v)) {
+				this.widget.thumbWidth = Math.max(v, 1);
+				this.update();
+			}
+			break;
+		case "pointer-map":
+			this.pointerMap = newValue;
+			this.updatePointerMap();
 			break;
 		}
 	}
@@ -103,6 +156,14 @@ class AWMeter extends HTMLElement {
 	set value(value) {
 		this.setAttribute("value", "" + value);
 	}
+
+	get step() {
+		return this.widget.step;
+	}
+
+	set step(value) {
+		this.setAttribute("step", "" + value);
+	}
 }
 
-customElements.define("aw-meter", AWMeter);
+customElements.define("aw-slider", AWSlider);

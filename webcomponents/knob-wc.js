@@ -1,6 +1,6 @@
-class AWMeter extends HTMLElement {
+class AWKnob extends HTMLElement {
 	static get observedAttributes() {
-		return ["width", "height", "disabled", "value", "vertical"];
+		return ["width", "height", "disabled", "value", "step", "min-angle", "max-angle", "pointer-map"];
 	}
 
 	constructor() {
@@ -8,13 +8,23 @@ class AWMeter extends HTMLElement {
 		this.width = 300;
 		this.height = 150;
 		this._disabled = false;
-		this.widget = Object.create(audioWidgets.meter);
+		this.widget = Object.create(audioWidgets.knob);
 		this.widget.init();
 		this.widget.x = 0;
 		this.widget.y = 0;
 		this.widget.setDisabled(this._disabled);
 		this.widget.setValue(0.5);
-		this.widget.vertical = false;
+		this.widget.setStep(0);
+		this.widget.minAngle = 1.25 * Math.PI;
+		this.widget.maxAngle = 1.75 * Math.PI;
+		this.pointerMap = "radial";
+		let _self = this;
+		this.widget.addEventListener("input", function (e) {
+			e.stopPropagation();
+			e = new CustomEvent("input",
+				{ bubbles: true } );
+			_self.dispatchEvent(e);
+		});
 	}
 
 	resize() {
@@ -30,8 +40,32 @@ class AWMeter extends HTMLElement {
 	update() {
 		if (!this.shadow)
 			return;
+		this.widget.update();
 		this.widget.clear();
 		this.widget.draw();
+	}
+
+	_pointerMapCustom(x, y, prevX, prevY, vValue) {
+		return this.pointerMapCustom(x, y, prevX, prevY, vValue);
+	}
+
+	updatePointerMap() {
+		if (!this.pointerHandle)
+			return;
+		switch (this.pointerMap) {
+		case "radial":
+			this.pointerHandle.map = audioWidgets.knob.mapRadial;
+			break;
+		case "vertical-differential":
+			this.pointerHandle.map = audioWidgets.knob.mapVerticalDifferential;
+			break;
+		case "custom":
+			this.pointerHandle.map = this._pointerMapCustom;
+			break;
+		default:
+			this.pointerHandle.map = null;
+			break;
+		}
 	}
 
 	connectedCallback() {
@@ -39,8 +73,9 @@ class AWMeter extends HTMLElement {
 		this.canvas = document.createElement("canvas");
 		this.shadow.appendChild(this.canvas);
 		this.widget.ctx = this.canvas.getContext("2d");
-		this.widget.addPointerIn();
+		this.pointerHandle = this.widget.addPointerIn();
 		this.resize();
+		this.updatePointerMap();
 	}
 
 	attributeChangedCallback(property, oldValue, newValue) {
@@ -73,9 +108,30 @@ class AWMeter extends HTMLElement {
 				this.update();
 			}
 			break;
-		case "vertical":
-			this.widget.vertical = newValue == "" || newValue == "true";
-			this.update();
+		case "step":
+			var v = parseFloat(newValue);
+			if (!isNaN(v)) {
+				this.widget.setStep(Math.max(v, 0));
+				this.update();
+			}
+			break;
+		case "min-angle":
+			var v = parseFloat(newValue);
+			if (!isNaN(v)) {
+				this.widget.minAngle = v;
+				this.update();
+			}
+			break;
+		case "max-angle":
+			var v = parseFloat(newValue);
+			if (!isNaN(v)) {
+				this.widget.maxAngle = v;
+				this.update();
+			}
+			break;
+		case "pointer-map":
+			this.pointerMap = newValue;
+			this.updatePointerMap();
 			break;
 		}
 	}
@@ -103,6 +159,14 @@ class AWMeter extends HTMLElement {
 	set value(value) {
 		this.setAttribute("value", "" + value);
 	}
+
+	get step() {
+		return this.widget.step;
+	}
+
+	set step(value) {
+		this.setAttribute("step", "" + value);
+	}
 }
 
-customElements.define("aw-meter", AWMeter);
+customElements.define("aw-knob", AWKnob);

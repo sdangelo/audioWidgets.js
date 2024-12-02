@@ -118,7 +118,7 @@ function init() {
 	sliderStepsElem.addEventListener("change",
 		function () {
 			var steps = parseInt(sliderStepsElem.value);
-			s.step = steps == 0 ? 0 : 1 / steps;
+			s.setStep(steps == 0 ? 0 : 1 / steps);
 			s.update();
 			s.clear();
 			s.draw();
