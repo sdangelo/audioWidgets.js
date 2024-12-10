@@ -23,7 +23,7 @@
 		handle.pointerupHook = function (id, x, y, active, hover) {
 			if (!(active && hover))
 				return;
-			for (p in handle.pointers)
+			for (var p in handle.pointers)
 				if (handle.pointers[p].active)
 					return;
 			var e = new CustomEvent("click",

@@ -123,14 +123,14 @@ audioWidgets.widget.addPointerIn = function () {
 	};
 
 	handle.blur = function (event) {
-		for (p in handle.pointers) {
+		for (var p in handle.pointers) {
 			handle.setActive(p, false);
 			handle.setHover(p, false);
 		}
 	};
 
 	handle.disable = function (event) {
-		for (p in handle.pointers)
+		for (var p in handle.pointers)
 			handle.setActive(p, false);
 	};
 
