@@ -146,8 +146,9 @@ var audioWidgets = {
 		},
 
 		dispatchEvent: function (event) {
-			event.target = this;
-			event.currentTarget = this;
+			// can't do this anyway
+			//event.target = this;
+			//event.currentTarget = this;
 			
 			if (!(event.type in this.listeners))
 				return true;
