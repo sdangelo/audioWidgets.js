@@ -106,5 +106,3 @@ class AWButton extends HTMLElement {
 		this.setAttribute("toggled", "" + value);
 	}
 }
-
-customElements.define("aw-button", AWButton);

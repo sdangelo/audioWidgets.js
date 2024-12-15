@@ -177,5 +177,3 @@ class AWKnob extends HTMLElement {
 		this.setAttribute("step", "" + value);
 	}
 }
-
-customElements.define("aw-knob", AWKnob);

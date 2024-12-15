@@ -113,5 +113,3 @@ class AWMeter extends HTMLElement {
 		this.setAttribute("value", "" + value);
 	}
 }
-
-customElements.define("aw-meter", AWMeter);

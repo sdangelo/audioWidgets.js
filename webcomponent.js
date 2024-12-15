@@ -92,5 +92,3 @@ class AWWidget extends HTMLElement {
 		this.setAttribute("disabled", "" + value);
 	}
 }
-
-customElements.define("aw-widget", AWWidget);

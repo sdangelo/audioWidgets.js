@@ -174,5 +174,3 @@ class AWSlider extends HTMLElement {
 		this.setAttribute("step", "" + value);
 	}
 }
-
-customElements.define("aw-slider", AWSlider);
