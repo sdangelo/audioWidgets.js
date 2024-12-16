@@ -34,6 +34,7 @@ class AWSlider extends HTMLElement {
 		this.canvas.height = this.height;
 		this.widget.width = this.width;
 		this.widget.height = this.height;
+		this.updateStyle();
 		this.update();
 	}
 
@@ -43,6 +44,10 @@ class AWSlider extends HTMLElement {
 		this.widget.update();
 		this.widget.clear();
 		this.widget.draw();
+	}
+
+	updateStyle() {
+		this.sheet.replaceSync(":host { " + (this._disabled ? "pointer-events: none; ": "") + "width: " + this.canvas.width + "px; height: " + this.canvas.height + "px }");
 	}
 
 	_pointerMapCustom(x, y, prevX, prevY, vPosition) {
@@ -71,8 +76,7 @@ class AWSlider extends HTMLElement {
 	connectedCallback() {
 		this.shadow = this.attachShadow({ mode: "closed" });
 		this.sheet = new CSSStyleSheet();
-		if (this._disabled)
-			this.sheet.insertRule(':host { pointer-events: none }');
+		this.shadow.adoptedStyleSheets = [this.sheet];
 		this.canvas = document.createElement("canvas");
 		this.shadow.appendChild(this.canvas);
 		this.widget.ctx = this.canvas.getContext("2d");
@@ -102,12 +106,7 @@ class AWSlider extends HTMLElement {
 		case "disabled":
 			this._disabled = newValue == "" || newValue == "true";
 			this.widget.setDisabled(this._disabled);
-			if (this.sheet) {
-				if (this._disabled)
-					this.sheet.insertRule(':host { pointer-events: none }');
-				else
-					this.sheet.deleteRule(0);
-			}
+			this.updateStyle();
 			this.update();
 			break;
 		case "value":
