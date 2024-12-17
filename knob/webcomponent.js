@@ -24,7 +24,6 @@ class AWKnob extends HTMLElement {
 			e = new CustomEvent("input", { bubbles: true });
 			_self.dispatchEvent(e);
 		});
-		let _self = this;
 		this.widget.addEventListener("click", function (e) {
 			e.stopPropagation();
 			e = new CustomEvent("click", { bubbles: true, cancelable: true });
