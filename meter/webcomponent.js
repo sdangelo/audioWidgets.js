@@ -15,6 +15,12 @@ class AWMeter extends HTMLElement {
 		this.widget.setDisabled(this._disabled);
 		this.widget.setValue(0.5);
 		this.widget.vertical = false;
+		let _self = this;
+		this.widget.addEventListener("click", function (e) {
+			e.stopPropagation();
+			e = new CustomEvent("click", { bubbles: true, cancelable: true });
+			_self.dispatchEvent(e);
+		});
 	}
 
 	resize() {
@@ -48,6 +54,9 @@ class AWMeter extends HTMLElement {
 		this.widget.ctx = this.canvas.getContext("2d");
 		this.widget.addPointerIn();
 		this.resize();
+		this.shadow.addEventListener("click", function (e) {
+			e.stopPropagation();
+		});
 	}
 
 	attributeChangedCallback(property, oldValue, newValue) {

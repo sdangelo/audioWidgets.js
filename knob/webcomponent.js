@@ -21,8 +21,13 @@ class AWKnob extends HTMLElement {
 		let _self = this;
 		this.widget.addEventListener("input", function (e) {
 			e.stopPropagation();
-			e = new CustomEvent("input",
-				{ bubbles: true } );
+			e = new CustomEvent("input", { bubbles: true });
+			_self.dispatchEvent(e);
+		});
+		let _self = this;
+		this.widget.addEventListener("click", function (e) {
+			e.stopPropagation();
+			e = new CustomEvent("click", { bubbles: true, cancelable: true });
 			_self.dispatchEvent(e);
 		});
 	}
@@ -83,6 +88,9 @@ class AWKnob extends HTMLElement {
 		this.pointerHandle = this.widget.addPointerIn();
 		this.resize();
 		this.updatePointerMap();
+		this.shadow.addEventListener("click", function (e) {
+			e.stopPropagation();
+		});
 	}
 
 	attributeChangedCallback(property, oldValue, newValue) {

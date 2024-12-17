@@ -13,6 +13,12 @@ class AWWidget extends HTMLElement {
 		this.widget.x = 0;
 		this.widget.y = 0;
 		this.widget.setDisabled(this._disabled);
+		let _self = this;
+		this.widget.addEventListener("click", function (e) {
+			e.stopPropagation();
+			e = new CustomEvent("click", { bubbles: true, cancelable: true });
+			_self.dispatchEvent(e);
+		});
 	}
 
 	resize() {
@@ -45,6 +51,9 @@ class AWWidget extends HTMLElement {
 		this.widget.ctx = this.canvas.getContext("2d");
 		this.widget.addPointerIn();
 		this.resize();
+		this.shadow.addEventListener("click", function (e) {
+			e.stopPropagation();
+		});
 	}
 
 	attributeChangedCallback(property, oldValue, newValue) {

@@ -25,6 +25,12 @@ class AWSlider extends HTMLElement {
 				{ bubbles: true } );
 			_self.dispatchEvent(e);
 		});
+		let _self = this;
+		this.widget.addEventListener("click", function (e) {
+			e.stopPropagation();
+			e = new CustomEvent("click", { bubbles: true, cancelable: true });
+			_self.dispatchEvent(e);
+		});
 	}
 
 	resize() {
@@ -83,6 +89,9 @@ class AWSlider extends HTMLElement {
 		this.pointerHandle = this.widget.addPointerIn();
 		this.resize();
 		this.updatePointerMap();
+		this.shadow.addEventListener("click", function (e) {
+			e.stopPropagation();
+		});
 	}
 
 	attributeChangedCallback(property, oldValue, newValue) {
