@@ -7,6 +7,7 @@ audioWidgets.html.
 ## TODO:
 
 * https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio;
+* exploit JS class inheritance in web components?
 * add Web MIDI API events;
 * use polyfills where needed?
 * review API;

@@ -149,6 +149,14 @@ class AWSlider extends HTMLElement {
 		this.widget.draw = value;
 	}
 
+	get isOver() {
+		return this.widget.isOver;
+	}
+
+	set isOver(value) {
+		this.widget.isOver = value;
+	}
+
 	get disabled() {
 		return this._disabled;
 	}
