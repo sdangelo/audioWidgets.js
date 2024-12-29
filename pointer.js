@@ -111,6 +111,9 @@ audioWidgets.widget.addPointerIn = function () {
 			handle.pointerupHook.call(w, event.pointerId,
 				offset.x, offset.y, active, over);
 		}
+
+		if (event.pointerType == "mouse")
+			handle.pointermove(event);
 	};
 
 	handle.pointercancel = function (event) {
