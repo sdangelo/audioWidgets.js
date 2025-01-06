@@ -60,6 +60,10 @@ class AWMeter extends HTMLElement {
 	}
 
 	attributeChangedCallback(property, oldValue, newValue) {
+		if (property == "value") {
+			this.value = newValue;
+			return;
+		}
 		if (oldValue == newValue)
 			return;
 		switch (property) {
@@ -82,13 +86,6 @@ class AWMeter extends HTMLElement {
 			this.widget.setDisabled(this._disabled);
 			this.updateStyle();
 			this.update();
-			break;
-		case "value":
-			var v = parseFloat(newValue);
-			if (!isNaN(v)) {
-				this.widget.setValue(Math.min(Math.max(v, 0), 1));
-				this.update();
-			}
 			break;
 		case "vertical":
 			this.widget.vertical = newValue == "" || newValue == "true";
@@ -126,6 +123,10 @@ class AWMeter extends HTMLElement {
 	}
 
 	set value(value) {
-		this.setAttribute("value", "" + value);
+		value = parseFloat(value);
+		if (isNaN(value))
+			return;
+		this.widget.setValue(Math.min(Math.max(value, 0), 1));
+		this.update();
 	}
 }
