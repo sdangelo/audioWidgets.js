@@ -18,7 +18,7 @@ class AWMeter extends HTMLElement {
 		let _self = this;
 		this.widget.addEventListener("click", function (e) {
 			e.stopPropagation();
-			e = new CustomEvent("click", { bubbles: true, cancelable: true });
+			e = new CustomEvent("click", { bubbles: true, cancelable: true, detail: e.detail });
 			_self.dispatchEvent(e);
 		});
 	}

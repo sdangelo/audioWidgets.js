@@ -63,6 +63,9 @@ audioWidgets.widget.addPointerIn = function () {
 
 	// Private
 
+	handle.lastClickTime = 0;
+	handle.clickCount = 0;
+
 	handle.pointerdown = function (event) {
 		var offset = w.getOffset(event.clientX, event.clientY);
 		if (!w.isOver(offset.x, offset.y))
@@ -105,12 +108,32 @@ audioWidgets.widget.addPointerIn = function () {
 		if (event.pointerId in handle.pointers)
 			active = handle.removePointer(event.pointerId).active;
 
-		if (handle.pointerupHook) {
-			var offset = w.getOffset(event.clientX, event.clientY);
-			var over = w.isOver(offset.x, offset.y);
+		var offset = w.getOffset(event.clientX, event.clientY);
+		var over = w.isOver(offset.x, offset.y);
+
+		var only = true;
+		for (var p in handle.pointers)
+			if (handle.pointers[p].active) {
+				only = false;
+				break;
+			}
+
+		if (active && over && only) {
+			var time = Date.now();
+			handle.clickCount =
+				time - handle.lastClickTime < 500
+				? handle.clickCount + 1 : 1;
+			handle.lastClickTime = time;
+			var e = new CustomEvent("click",
+					{ bubbles: true,
+					  cancelable: true,
+					  detail: handle.clickCount });
+			w.dispatchEvent(e);
+		}
+
+		if (handle.pointerupHook)
 			handle.pointerupHook.call(w, event.pointerId,
 				offset.x, offset.y, active, over);
-		}
 
 		if (event.pointerType == "mouse")
 			handle.pointermove(event);

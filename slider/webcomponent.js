@@ -27,7 +27,7 @@ class AWSlider extends HTMLElement {
 		});
 		this.widget.addEventListener("click", function (e) {
 			e.stopPropagation();
-			e = new CustomEvent("click", { bubbles: true, cancelable: true });
+			e = new CustomEvent("click", { bubbles: true, cancelable: true, detail: e.detail });
 			_self.dispatchEvent(e);
 		});
 	}
