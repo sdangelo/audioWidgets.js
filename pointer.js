@@ -80,6 +80,8 @@ audioWidgets.widget.addPointerIn = function () {
 		if (w.disabled)
 			return;
 
+		w.ctx.canvas.setPointerCapture(event.pointerId);
+
 		handle.setActive(event.pointerId, true);
 
 		if (handle.pointerdownHook)
@@ -160,12 +162,20 @@ audioWidgets.widget.addPointerIn = function () {
 			handle.setActive(p, false);
 	};
 
+	handle.contextmenu = function (event) {
+		var offset = w.getOffset(event.clientX, event.clientY);
+		var over = w.isOver(offset.x, offset.y);
+		if (over)
+			event.preventDefault();
+	};
+
 	w.ctx.canvas.addEventListener("pointerdown", handle.pointerdown);
-	document.addEventListener("pointermove", handle.pointermove);
-	document.addEventListener("pointerup", handle.pointerup);
-	document.addEventListener("pointercancel", handle.pointercancel);
+	w.ctx.canvas.addEventListener("pointermove", handle.pointermove);
+	w.ctx.canvas.addEventListener("pointerup", handle.pointerup);
+	w.ctx.canvas.addEventListener("pointercancel", handle.pointercancel);
 	window.addEventListener("blur", handle.blur);
 	w.addEventListener("disable", handle.disable);
+	w.ctx.canvas.addEventListener("contextmenu", handle.contextmenu);
 
 	return handle;
 };
