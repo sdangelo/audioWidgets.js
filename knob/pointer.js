@@ -14,6 +14,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+audioWidgets.knob.sensitivity = 1.0;
+audioWidgets.knob.middleSensitivity = 0.5;
+audioWidgets.knob.rightSensitivity = 0.1;
+
 (function () {
 	var f = audioWidgets.widget.addPointerIn;
 
@@ -23,12 +27,19 @@
 		var pointers = {};
 		var vValue;
 
-		function move(id, x, y) {
+		function move(event, x, y) {
+			var id = event.pointerId;
 			if (handle.map) {
+				var s = event.buttons & 1
+					? this.sensitivity : Infinity;
+				if (event.buttons & 2)
+					s = Math.min(s, this.rightSensitivity);
+				if (event.buttons & 4)
+					s = Math.min(s, this.middleSensitivity);
 				var r = handle.map.call(this, x, y,
 						pointers[id].prevX,
 						pointers[id].prevY,
-						vValue);
+						vValue, s);
 				if ("angle" in r) {
 					if (r.angle != this.angle
 					    && this.angleIsValid(r.angle)) {
@@ -66,12 +77,12 @@
 			y -= this.radius;
 			pointers[event.pointerId] = { prevX: x, prevY: y };
 			vValue = this.value;
-			move.call(this, event.pointerId, x, y);
+			move.call(this, event, x, y);
 		};
 
 		handle.pointermoveHook = function (event, x, y, active, hover) {
 			if (active)
-				move.call(this, event.pointerId,
+				move.call(this, event,
 					  x - this.radius, y - this.radius);
 		};
 
@@ -87,7 +98,8 @@
 	};
 })();
 
-audioWidgets.knob.mapRadial = function (x, y, prevX, prevY, vValue) {
+audioWidgets.knob.mapRadial =
+function (x, y, prevX, prevY, vValue, sensitivity) {
 	var angle = Math.atan2(-y, x);
 	if (angle < 0)
 		angle += Math.PI + Math.PI;
@@ -113,8 +125,9 @@ audioWidgets.knob.mapRadial = function (x, y, prevX, prevY, vValue) {
 	return { angle: angle };
 };
 
-audioWidgets.knob.mapVerticalDifferential = function (x, y, prevX, prevY, vValue) {
-	var k = 0.5 * this.height;
+audioWidgets.knob.mapVerticalDifferential =
+function (x, y, prevX, prevY, vValue, sensitivity) {
+	var k = 0.5 * this.height / sensitivity;
 	if (this.maxAngle > this.minAngle)
 		k *= this.minAngle - this.maxAngle + Math.PI + Math.PI;
 	else

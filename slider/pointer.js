@@ -14,6 +14,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+audioWidgets.slider.sensitivity = 1.0;
+audioWidgets.slider.middleSensitivity = 0.5;
+audioWidgets.slider.rightSensitivity = 0.1;
+
 (function () {
 	var f = audioWidgets.widget.addPointerIn;
 
@@ -23,13 +27,20 @@
 		var pointers = {};
 		var vPosition;
 
-		function move(id, x, y) {
+		function move(event, x, y) {
+			var id = event.pointerId;
 			if (handle.map) {
+				var s = event.buttons & 1
+					? this.sensitivity : Infinity;
+				if (event.buttons & 2)
+					s = Math.min(s, this.rightSensitivity);
+				if (event.buttons & 4)
+					s = Math.min(s, this.middleSensitivity);
 				vPosition =
 					handle.map.call(this, x, y,
 						pointers[id].prevX,
 						pointers[id].prevY,
-						vPosition);
+						vPosition, s);
 				if (vPosition != this.thumbPosition
 				    && this.thumbPositionIsValid(vPosition))
 				{
@@ -51,12 +62,12 @@
 		handle.pointerdownHook = function (event, x, y) {
 			pointers[event.pointerId] = { prevX: x, prevY: y };
 			vPosition = this.thumbPosition;
-			move.call(this, event.pointerId, x, y);
+			move.call(this, event, x, y);
 		};
 
 		handle.pointermoveHook = function (event, x, y, active, hover) {
 			if (active)
-				move.call(this, event.pointerId, x, y);
+				move.call(this, event, x, y);
 		};
 
 		handle.pointerupHook = function (event, x, y, active, hover) {
@@ -71,7 +82,8 @@
 	};
 })();
 
-audioWidgets.slider.mapParallel = function (x, y, prevX, prevY, vPosition) {
+audioWidgets.slider.mapParallel =
+function (x, y, prevX, prevY, vPosition, sensitivity) {
 	var p = this.vertical ? this.height - y : x;
 	if (p < this.minThumbPosition)
 		p = this.minThumbPosition;
@@ -80,8 +92,11 @@ audioWidgets.slider.mapParallel = function (x, y, prevX, prevY, vPosition) {
 	return p;
 };
 
-audioWidgets.slider.mapParallelDifferential = function (x, y, prevX, prevY, vPosition) {
-	var p = this.vertical ? vPosition - y + prevY: vPosition + x - prevX;
+audioWidgets.slider.mapParallelDifferential =
+function (x, y, prevX, prevY, vPosition, sensitivity) {
+	//var p = this.vertical ? vPosition - y + prevY: vPosition + x - prevX;
+	var p = vPosition
+		+ sensitivity * (this.vertical ? prevY - y: x - prevX);
 	if (p < this.minThumbPosition)
 		p = this.minThumbPosition;
 	else if (p > this.maxThumbPosition)
