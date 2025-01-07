@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015, 2023, 2024 Stefano D'Angelo <zanga.mail@gmail.com>
+ * Copyright (C) 2015, 2023-2025 Stefano D'Angelo <zanga.mail@gmail.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -33,13 +33,14 @@
 			// are we sure these are executed after keyboard hooks?
 
 			handle.keyHandles[i].pointerdownHook =
-			function (id, x, y) {
-				if (handle.pointers[id].active)
-					curActive[id] = this;
+			function (event, x, y) {
+				if (handle.pointers[event.pointerId].active)
+					curActive[event.pointerId] = this;
 			};
 
 			handle.keyHandles[i].pointermoveHook =
-			function (id, x, y, active, hover) {
+			function (event, x, y, active, hover) {
+				var id = event.pointerId;
 				if (handle.pointers[id].active && hover
 				    && curActive[id] != this) {
 					var j = k.keys.indexOf(curActive[id]);
@@ -52,12 +53,14 @@
 				}
 			};
 
-			handle.keyHandles[i].pointerupHook = function (id, x, y, active, hover) {
-				delete curActive[id];
+			handle.keyHandles[i].pointerupHook =
+			function (event, x, y, active, hover) {
+				delete curActive[event.pointerId];
 			};
 
-			handle.keyHandles[i].pointercancelHook = function (id) {
-				delete curActive[id];
+			handle.keyHandles[i].pointercancelHook =
+			function (event) {
+				delete curActive[event.pointerId];
 			};
 		}
 

@@ -85,7 +85,7 @@ audioWidgets.widget.addPointerIn = function () {
 		handle.setActive(event.pointerId, true);
 
 		if (handle.pointerdownHook)
-			handle.pointerdownHook.call(w, event.pointerId,
+			handle.pointerdownHook.call(w, event,
 				offset.x, offset.y);
 	};
 
@@ -100,7 +100,7 @@ audioWidgets.widget.addPointerIn = function () {
 			handle.setHover(event.pointerId, over);
 
 		if (handle.pointermoveHook)
-			handle.pointermoveHook.call(w, event.pointerId,
+			handle.pointermoveHook.call(w, event,
 				offset.x, offset.y,
 				handle.pointers[event.pointerId].active, over);
 	};
@@ -134,7 +134,7 @@ audioWidgets.widget.addPointerIn = function () {
 		}
 
 		if (handle.pointerupHook)
-			handle.pointerupHook.call(w, event.pointerId,
+			handle.pointerupHook.call(w, event,
 				offset.x, offset.y, active, over);
 
 		if (event.pointerType == "mouse")
@@ -146,7 +146,7 @@ audioWidgets.widget.addPointerIn = function () {
 			handle.removePointer(event.pointerId);
 
 			if (handle.pointercancelHook)
-				handle.pointercancelHook(w, event.pointerId);
+				handle.pointercancelHook(w, event);
 		}
 	};
 

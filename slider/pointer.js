@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015, 2023, 2024 Stefano D'Angelo <zanga.mail@gmail.com>
+ * Copyright (C) 2015, 2023-2025 Stefano D'Angelo <zanga.mail@gmail.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -48,23 +48,23 @@
 			pointers[id].prevY = y;
 		}
 
-		handle.pointerdownHook = function (id, x, y) {
-			pointers[id] = { prevX: x, prevY: y };
+		handle.pointerdownHook = function (event, x, y) {
+			pointers[event.pointerId] = { prevX: x, prevY: y };
 			vPosition = this.thumbPosition;
-			move.call(this, id, x, y);
+			move.call(this, event.pointerId, x, y);
 		};
 
-		handle.pointermoveHook = function (id, x, y, active, hover) {
+		handle.pointermoveHook = function (event, x, y, active, hover) {
 			if (active)
-				move.call(this, id, x, y);
+				move.call(this, event.pointerId, x, y);
 		};
 
-		handle.pointerupHook = function (id, x, y, active, hover) {
-			delete pointers[id];
+		handle.pointerupHook = function (event, x, y, active, hover) {
+			delete pointers[event.pointerId];
 		};
 
-		handle.pointercancelHook = function (id) {
-			delete pointers[id];
+		handle.pointercancelHook = function (event) {
+			delete pointers[event.pointerId];
 		};
 
 		return handle;
