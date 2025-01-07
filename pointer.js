@@ -112,6 +112,11 @@ audioWidgets.widget.addPointerIn = function () {
 				handle.pointers[event.pointerId].active, over);
 	};
 
+	handle.pointerleave = function (event) {
+		if (event.pointerId in handle.pointers)
+			handle.removePointer(event.pointerId);
+	};
+
 	handle.pointerup = function (event) {
 		var active = false;
 		var clicking = event.button == 0;
@@ -181,6 +186,7 @@ audioWidgets.widget.addPointerIn = function () {
 
 	w.ctx.canvas.addEventListener("pointerdown", handle.pointerdown);
 	w.ctx.canvas.addEventListener("pointermove", handle.pointermove);
+	w.ctx.canvas.addEventListener("pointerleave", handle.pointerleave);
 	w.ctx.canvas.addEventListener("pointerup", handle.pointerup);
 	w.ctx.canvas.addEventListener("pointercancel", handle.pointercancel);
 	window.addEventListener("blur", handle.blur);
