@@ -19,8 +19,9 @@ audioWidgets.widget.addPointerIn = function () {
 		// Read-only
 		pointers: {
 			/* id: {
-				active: false,
-				hover:  false
+				active:   false,
+				hover:    false,
+				clicking: false
 			} */
 		}
 	};
@@ -73,7 +74,8 @@ audioWidgets.widget.addPointerIn = function () {
 
 		if (!(event.pointerId in handle.pointers))
 			handle.addPointer(event.pointerId,
-				{ active: false, hover: true });
+				{ active: false, hover: true,
+				  clicking: false });
 
 		event.preventDefault();
 
@@ -83,6 +85,7 @@ audioWidgets.widget.addPointerIn = function () {
 		w.ctx.canvas.setPointerCapture(event.pointerId);
 
 		handle.setActive(event.pointerId, true);
+		handle.pointers[event.pointerId].clicking = event.buttons == 1;
 
 		if (handle.pointerdownHook)
 			handle.pointerdownHook.call(w, event,
@@ -95,9 +98,13 @@ audioWidgets.widget.addPointerIn = function () {
 
 		if (!(event.pointerId in handle.pointers))
 			handle.addPointer(event.pointerId,
-				{ active: false, hover: over });
+				{ active: false, hover: over,
+				  clicking: false });
 		else
 			handle.setHover(event.pointerId, over);
+
+		if (event.buttons != 1)
+			handle.pointers[event.pointerId].clicking = false;
 
 		if (handle.pointermoveHook)
 			handle.pointermoveHook.call(w, event,
@@ -107,8 +114,11 @@ audioWidgets.widget.addPointerIn = function () {
 
 	handle.pointerup = function (event) {
 		var active = false;
-		if (event.pointerId in handle.pointers)
+		var clicking = event.button == 0;
+		if (event.pointerId in handle.pointers) {
+			clicking &&= handle.pointers[event.pointerId].clicking;
 			active = handle.removePointer(event.pointerId).active;
+		}
 
 		var offset = w.getOffset(event.clientX, event.clientY);
 		var over = w.isOver(offset.x, offset.y);
@@ -120,7 +130,7 @@ audioWidgets.widget.addPointerIn = function () {
 				break;
 			}
 
-		if (active && over && only) {
+		if (active && over && only && clicking) {
 			var time = Date.now();
 			handle.clickCount =
 				time - handle.lastClickTime < 500
