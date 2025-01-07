@@ -16,7 +16,7 @@
 
 class AWSlider extends HTMLElement {
 	static get observedAttributes() {
-		return ["width", "height", "disabled", "value", "step", "vertical", "thumb-width", "pointer-map"];
+		return ["width", "height", "disabled", "value", "step", "vertical", "thumb-width", "pointer-map", "sensitivity", "middle-sensitivity", "right-sensitivity"];
 	}
 
 	constructor() {
@@ -34,6 +34,9 @@ class AWSlider extends HTMLElement {
 		this.widget.vertical = false;
 		this.widget.thumbWidth = 10;
 		this.pointerMap = "parallel";
+		this.widget.sensitivity = 1.0;
+		this.widget.middleSensitivity = 0.5;
+		this.widget.rightSensitivity = 0.1;
 		let _self = this;
 		this.widget.addEventListener("input", function (e) {
 			e.stopPropagation();
@@ -158,6 +161,21 @@ class AWSlider extends HTMLElement {
 		case "pointer-map":
 			this.pointerMap = newValue;
 			this.updatePointerMap();
+			break;
+		case "sensitivity":
+			var v = parseFloat(newValue);
+			if (!isNaN(v))
+				this.widget.sensitivity = v;
+			break;
+		case "middle-sensitivity":
+			var v = parseFloat(newValue);
+			if (!isNaN(v))
+				this.widget.middleSensitivity = v;
+			break;
+		case "right-sensitivity":
+			var v = parseFloat(newValue);
+			if (!isNaN(v))
+				this.widget.rightSensitivity = v;
 			break;
 		}
 	}
