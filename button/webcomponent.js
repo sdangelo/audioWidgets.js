@@ -129,6 +129,14 @@ class AWButton extends HTMLElement {
 		this.setAttribute("disabled", "" + value);
 	}
 
+	get hoverCount() {
+		return this.widget.hoverCount;
+	}
+
+	get activeCount() {
+		return this.widget.activeCount;
+	}
+
 	get toggled() {
 		return this.widget.toggled;
 	}

@@ -106,4 +106,12 @@ class AWWidget extends HTMLElement {
 	set disabled(value) {
 		this.setAttribute("disabled", "" + value);
 	}
+
+	get hoverCount() {
+		return this.widget.hoverCount;
+	}
+
+	get activeCount() {
+		return this.widget.activeCount;
+	}
 }

@@ -134,6 +134,14 @@ class AWMeter extends HTMLElement {
 		this.setAttribute("disabled", "" + value);
 	}
 
+	get hoverCount() {
+		return this.widget.hoverCount;
+	}
+
+	get activeCount() {
+		return this.widget.activeCount;
+	}
+
 	get value() {
 		return this.widget.value;
 	}
