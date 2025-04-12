@@ -65,8 +65,8 @@ audioWidgets.widget.addPointerIn = function () {
 	// Private
 
 	handle.multiClickReset = function () {
-		handle.multiClickX = undefined;
-		handle.multiClickY = undefined;
+		/*handle.multiClickX = undefined;
+		handle.multiClickY = undefined;*/
 		handle.multiClickDownTime = 0;
 		handle.multiClickUpTime = 0;
 		handle.multiClickCount = 0;
@@ -105,9 +105,9 @@ audioWidgets.widget.addPointerIn = function () {
 
 		if (handle.pointers[event.pointerId].clicking && handle.countActivePointers() == 1) {
 			handle.multiClickDownTime = Date.now();
-			if (handle.multiClickX !== offset.x || handle.multiClickY !== offset.y || handle.multiClickDownTime - handle.multiClickUpTime > 250) {
-				handle.multiClickX = offset.x;
-				handle.multiClickY = offset.y;
+			if (/*handle.multiClickX !== offset.x || handle.multiClickY !== offset.y || */handle.multiClickDownTime - handle.multiClickUpTime > 250) {
+				/*handle.multiClickX = offset.x;
+				handle.multiClickY = offset.y;*/
 				handle.multiClickCount = 1;
 			} else
 				handle.multiClickCount++;
@@ -133,7 +133,7 @@ audioWidgets.widget.addPointerIn = function () {
 		if (event.buttons != 1)
 			handle.pointers[event.pointerId].clicking = false;
 
-		if (handle.multiClickX !== offset.x || handle.multiClickY !== offset.y || event.buttons != 0)
+		if (/*handle.multiClickX !== offset.x || handle.multiClickY !== offset.y || */event.buttons != 0)
 			handle.multiClickReset();
 
 		if (handle.pointermoveHook)
@@ -164,7 +164,7 @@ audioWidgets.widget.addPointerIn = function () {
 		if (active && over && handle.countActivePointers() == 0 && clicking) {
 			var clickCount;
 			handle.multiClickUpTime = Date.now();
-			if (handle.multiClickX !== offset.x || handle.multiClickY !== offset.y || handle.multiClickUpTime - handle.multiClickDownTime > 250) {
+			if (/*handle.multiClickX !== offset.x || handle.multiClickY !== offset.y || */handle.multiClickUpTime - handle.multiClickDownTime > 250) {
 				handle.multiClickReset();
 				clickCount = 1;
 			} else
