@@ -64,8 +64,22 @@ audioWidgets.widget.addPointerIn = function () {
 
 	// Private
 
-	handle.lastClickTime = 0;
-	handle.clickCount = 0;
+	handle.multiClickReset = function () {
+		handle.multiClickX = undefined;
+		handle.multiClickY = undefined;
+		handle.multiClickDownTime = 0;
+		handle.multiClickUpTime = 0;
+		handle.multiClickCount = 0;
+	};
+	handle.multiClickReset();
+
+	handle.countActivePointers = function () {
+		var i = 0;
+		for (var p in handle.pointers)
+			if (handle.pointers[p].active)
+				i++;
+		return i;
+	}
 
 	handle.pointerdown = function (event) {
 		var offset = w.getOffset(event.clientX, event.clientY);
@@ -79,13 +93,26 @@ audioWidgets.widget.addPointerIn = function () {
 
 		event.preventDefault();
 
-		if (w.disabled)
+		if (w.disabled) {
+			handle.multiClickReset();
 			return;
+		}
 
 		w.ctx.canvas.setPointerCapture(event.pointerId);
 
 		handle.setActive(event.pointerId, true);
 		handle.pointers[event.pointerId].clicking = event.buttons == 1;
+
+		if (handle.pointers[event.pointerId].clicking && handle.countActivePointers() == 1) {
+			handle.multiClickDownTime = Date.now();
+			if (handle.multiClickX !== offset.x || handle.multiClickY !== offset.y || handle.multiClickDownTime - handle.multiClickUpTime > 250) {
+				handle.multiClickX = offset.x;
+				handle.multiClickY = offset.y;
+				handle.multiClickCount = 1;
+			} else
+				handle.multiClickCount++;
+		} else
+			handle.multiClickReset();
 
 		if (handle.pointerdownHook)
 			handle.pointerdownHook.call(w, event,
@@ -106,6 +133,9 @@ audioWidgets.widget.addPointerIn = function () {
 		if (event.buttons != 1)
 			handle.pointers[event.pointerId].clicking = false;
 
+		if (handle.multiClickX !== offset.x || handle.multiClickY !== offset.y || event.buttons != 0)
+			handle.multiClickReset();
+
 		if (handle.pointermoveHook)
 			handle.pointermoveHook.call(w, event,
 				offset.x, offset.y,
@@ -113,8 +143,11 @@ audioWidgets.widget.addPointerIn = function () {
 	};
 
 	handle.pointerleave = function (event) {
-		if (event.pointerId in handle.pointers)
+		if (event.pointerId in handle.pointers) {
 			handle.removePointer(event.pointerId);
+
+			handle.multiClickReset();
+		}
 	};
 
 	handle.pointerup = function (event) {
@@ -128,25 +161,21 @@ audioWidgets.widget.addPointerIn = function () {
 		var offset = w.getOffset(event.clientX, event.clientY);
 		var over = w.isOver(offset.x, offset.y);
 
-		var only = true;
-		for (var p in handle.pointers)
-			if (handle.pointers[p].active) {
-				only = false;
-				break;
-			}
-
-		if (active && over && only && clicking) {
-			var time = Date.now();
-			handle.clickCount =
-				time - handle.lastClickTime < 500
-				? handle.clickCount + 1 : 1;
-			handle.lastClickTime = time;
+		if (active && over && handle.countActivePointers() == 0 && clicking) {
+			var clickCount;
+			handle.multiClickUpTime = Date.now();
+			if (handle.multiClickX !== offset.x || handle.multiClickY !== offset.y || handle.multiClickUpTime - handle.multiClickDownTime > 250) {
+				handle.multiClickReset();
+				clickCount = 1;
+			} else
+				clickCount = handle.multiClickCount;
 			var e = new CustomEvent("click",
 					{ bubbles: true,
 					  cancelable: true,
-					  detail: handle.clickCount });
+					  detail: clickCount });
 			w.dispatchEvent(e);
-		}
+		} else
+			handle.multiClickReset();
 
 		if (handle.pointerupHook)
 			handle.pointerupHook.call(w, event,
@@ -160,6 +189,8 @@ audioWidgets.widget.addPointerIn = function () {
 		if (event.pointerId in handle.pointers) {
 			handle.removePointer(event.pointerId);
 
+			handle.multiClickReset();
+
 			if (handle.pointercancelHook)
 				handle.pointercancelHook(w, event);
 		}
@@ -170,11 +201,15 @@ audioWidgets.widget.addPointerIn = function () {
 			handle.setActive(p, false);
 			handle.setHover(p, false);
 		}
+
+		handle.multiClickReset();
 	};
 
 	handle.disable = function (event) {
 		for (var p in handle.pointers)
 			handle.setActive(p, false);
+
+		handle.multiClickReset();
 	};
 
 	handle.contextmenu = function (event) {
@@ -182,6 +217,8 @@ audioWidgets.widget.addPointerIn = function () {
 		var over = w.isOver(offset.x, offset.y);
 		if (over)
 			event.preventDefault();
+
+		handle.multiClickReset();
 	};
 
 	w.ctx.canvas.addEventListener("pointerdown", handle.pointerdown);
