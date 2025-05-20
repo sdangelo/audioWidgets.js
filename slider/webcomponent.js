@@ -98,18 +98,20 @@ class AWSlider extends HTMLElement {
 	}
 
 	connectedCallback() {
-		this.shadow = this.attachShadow({ mode: "closed" });
-		this.sheet = new CSSStyleSheet();
-		this.shadow.adoptedStyleSheets = [this.sheet];
-		this.canvas = document.createElement("canvas");
-		this.shadow.appendChild(this.canvas);
-		this.widget.ctx = this.canvas.getContext("2d");
-		this.pointerHandle = this.widget.addPointerIn();
+		if (!this.shadow) {
+			this.shadow = this.attachShadow({ mode: "closed" });
+			this.sheet = new CSSStyleSheet();
+			this.shadow.adoptedStyleSheets = [this.sheet];
+			this.canvas = document.createElement("canvas");
+			this.shadow.appendChild(this.canvas);
+			this.widget.ctx = this.canvas.getContext("2d");
+			this.pointerHandle = this.widget.addPointerIn();
+			this.updatePointerMap();
+			this.shadow.addEventListener("click", function (e) {
+				e.stopPropagation();
+			});
+		}
 		this.resize();
-		this.updatePointerMap();
-		this.shadow.addEventListener("click", function (e) {
-			e.stopPropagation();
-		});
 	}
 
 	attributeChangedCallback(property, oldValue, newValue) {

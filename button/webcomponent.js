@@ -62,16 +62,18 @@ class AWButton extends HTMLElement {
 
 	connectedCallback() {
 		this.shadow = this.attachShadow({ mode: "closed" });
-		this.sheet = new CSSStyleSheet();
-		this.shadow.adoptedStyleSheets = [this.sheet];
-		this.canvas = document.createElement("canvas");
-		this.shadow.appendChild(this.canvas);
-		this.widget.ctx = this.canvas.getContext("2d");
-		this.widget.addPointerIn();
+		if (!this.shadow) {
+			this.sheet = new CSSStyleSheet();
+			this.shadow.adoptedStyleSheets = [this.sheet];
+			this.canvas = document.createElement("canvas");
+			this.shadow.appendChild(this.canvas);
+			this.widget.ctx = this.canvas.getContext("2d");
+			this.widget.addPointerIn();
+			this.shadow.addEventListener("click", function (e) {
+				e.stopPropagation();
+			});
+		}
 		this.resize();
-		this.shadow.addEventListener("click", function (e) {
-			e.stopPropagation();
-		});
 	}
 
 	attributeChangedCallback(property, oldValue, newValue) {
