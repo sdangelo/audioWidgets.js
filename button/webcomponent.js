@@ -61,8 +61,8 @@ class AWButton extends HTMLElement {
 	}
 
 	connectedCallback() {
-		this.shadow = this.attachShadow({ mode: "closed" });
 		if (!this.shadow) {
+			this.shadow = this.attachShadow({ mode: "closed" });
 			this.sheet = new CSSStyleSheet();
 			this.shadow.adoptedStyleSheets = [this.sheet];
 			this.canvas = document.createElement("canvas");
