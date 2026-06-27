@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024, 2025 Stefano D'Angelo <zanga.mail@gmail.com>
+ * Copyright (C) 2024-2026 Stefano D'Angelo <zanga.mail@gmail.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -58,7 +58,20 @@ class AWMeter extends HTMLElement {
 	}
 
 	updateStyle() {
-		this.sheet.replaceSync(":host { " + (this._disabled ? "pointer-events: none; ": "") + "width: " + this.canvas.width + "px; height: " + this.canvas.height + "px }");
+		this.sheet.replaceSync(`
+			:host { display: block; position: relative }
+			:host > div {
+				${this.disabled ? "pointer-events: none;" : ""}
+				position: relative;
+				width: ${this.canvas.width}px;
+				height: ${this.canvas.height}px;
+				overflow: hidden;
+			}
+			:host > div > canvas {
+				position: absolute;
+				left: 0;
+				top: 0;
+			}`);
 	}
 
 	connectedCallback() {
@@ -66,8 +79,10 @@ class AWMeter extends HTMLElement {
 			this.shadow = this.attachShadow({ mode: "closed" });
 			this.sheet = new CSSStyleSheet();
 			this.shadow.adoptedStyleSheets = [this.sheet];
+			var div = document.createElement("div");
 			this.canvas = document.createElement("canvas");
-			this.shadow.appendChild(this.canvas);
+			this.shadow.appendChild(div);
+			div.appendChild(this.canvas);
 			this.widget.ctx = this.canvas.getContext("2d");
 			this.widget.addPointerIn();
 			this.shadow.addEventListener("click", function (e) {
