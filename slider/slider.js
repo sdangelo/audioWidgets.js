@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015, 2023 Stefano D'Angelo <zanga.mail@gmail.com>
+ * Copyright (C) 2015, 2023, 2026 Stefano D'Angelo <zanga.mail@gmail.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -38,15 +38,10 @@ audioWidgets.slider.k1inv = NaN;
 // to be called when changing width, height, vertical, thumbWidth.
 audioWidgets.slider.update = function () {
 	this.minThumbPosition = 0.5 * this.thumbWidth;
-	if (this.vertical) {
-		this.maxThumbPosition = this.height - this.minThumbPosition;
-		this.k1inv = this.height - this.thumbWidth;
-		this.k1 = 1 / this.k1inv;
-	} else {
-		this.maxThumbPosition = this.width - this.minThumbPosition;
-		this.k1inv = this.width - this.thumbWidth;
-		this.k1 = 1 / this.k1inv;
-	}
+	var t = this.vertical ? this.height : this.width;
+	this.maxThumbPosition = t - this.minThumbPosition;
+	this.k1inv = t - this.thumbWidth;
+	this.k1 = 1 / this.k1inv;
 	this.k0 = -0.5 * this.thumbWidth * this.k1;
 	this.k0inv = -this.k1inv * this.k0;
 	this.setValue(this.value);

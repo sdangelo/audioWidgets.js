@@ -30,12 +30,16 @@
 		<script src="knob/knob.js"></script>
 		<script src="knob/pointer.js"></script>
 		<script src="knob/webcomponent.js"></script>
+		<script src="pad/pad.js"></script>
+		<script src="pad/pointer.js"></script>
+		<script src="pad/webcomponent.js"></script>
 		<script src="meter/meter.js"></script>
 		<script src="meter/webcomponent.js"></script>
 		<script>
 customElements.define("aw-widget", AWWidget);
 customElements.define("aw-button", AWButton);
 customElements.define("aw-knob", AWKnob);
+customElements.define("aw-pad", AWPad);
 customElements.define("aw-meter", AWMeter);
 customElements.define("aw-slider", AWSlider);
 
@@ -104,6 +108,20 @@ function init() {
 		});
 	knob.step = knobSteps.value == 0 ? 0 : 1 / knobSteps.value;
 
+	var pad = document.getElementById("pad");
+	var padDisable = document.getElementById("padDisable");
+	padDisable.addEventListener("click",
+		function () {
+			var disabled = padDisable.value == "Enable";
+			padDisable.value = disabled ? "Disable" : "Enable";
+			//slider.setAttribute("disabled", disabled ? "false" : "true");
+			pad.disabled = disabled ? false : true;
+		});
+	pad.addEventListener("input",
+		function () {
+			console.log("pad: " + pad.value.x + " " + pad.value.y);
+		});
+
 	var meterH = document.getElementById("meterH");
 	var meterV = document.getElementById("meterV");
 	var meterDisable = document.getElementById("meterDisable");
@@ -151,6 +169,11 @@ window.addEventListener("load", init);
 		<div>
 			<input type="button" id="knobDisable" value="Disable">
 			<input type="number" id="knobSteps" value="0" min="0" max="100">
+		</div>
+		<h2>Pad</h2>
+		<aw-pad id="pad" width="300" height="200" pointer-map="parallel"></aw-knob>
+		<div>
+			<input type="button" id="padDisable" value="Disable">
 		</div>
 		<h2>Meter</h2>
 		<aw-meter id="meterH" width="300" height="20"></aw-meter>

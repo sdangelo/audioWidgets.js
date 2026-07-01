@@ -40,6 +40,8 @@ canvas {
     <script src="slider/pointer.js" type="text/javascript"></script>
     <script src="knob/knob.js" type="text/javascript"></script>
     <script src="knob/pointer.js" type="text/javascript"></script>
+    <script src="pad/pad.js" type="text/javascript"></script>
+    <script src="pad/pointer.js" type="text/javascript"></script>
     <script src="pianoKeyboard/pianoKeyboard.js" type="text/javascript"></script>
     <script src="pianoKeyboard/pointer.js" type="text/javascript"></script>
     <script src="pianoKeyboard/keyboard.js" type="text/javascript"></script>
@@ -181,6 +183,36 @@ function init() {
 			k.draw();
 		});
 	knobStepsElem.dispatchEvent(new Event("change"));
+
+	var padCanvas = document.getElementById("padCanvas");
+	var padCtx = padCanvas.getContext("2d");
+
+	var p = Object.create(audioWidgets.pad);
+	p.init();
+
+	p.ctx = padCtx;
+	p.x = 0;
+	p.y = 0;
+	p.width = padCanvas.width;
+	p.height = padCanvas.height;
+	p.thumbWidth = 10;
+	p.thumbHeight = 10;
+	p.update();
+
+	p.setValue(0.5, 0.5);
+
+	p.clear();
+	p.draw();
+
+	var phandle = p.addPointerIn();
+	phandle.map = p.mapParallel;
+
+	var padDisableElem = document.getElementById("padDisable");
+	padDisableElem.addEventListener("click",
+		function () {
+			p.setDisabled(!p.disabled);
+			padDisableElem.value = p.disabled ? "Enable" : "Disable";
+		});
 
 	var keyLeftCanvas = document.getElementById("keyLeftCanvas");
 	var keyLeftCtx = keyLeftCanvas.getContext("2d");
@@ -391,6 +423,11 @@ window.addEventListener("load", init);
     <div>
       <input type="button" id="knobDisable" value="Disable"/>
       <input type="number" id="knobSteps" value="0" min="0" max="100"/>
+    </div>
+    <h2>Pad</h2>
+    <canvas id="padCanvas" width="200" height="100"></canvas>
+    <div>
+      <input type="button" id="padDisable" value="Disable"/>
     </div>
     <h2>Single piano keys</h2>
     <canvas id="keyLeftCanvas" width="25" height="100"></canvas>
