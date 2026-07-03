@@ -56,8 +56,6 @@ class AWKnob extends HTMLElement {
 		shadow.appendChild(div);
 		div.appendChild(this.canvas);
 		this.widget.ctx = this.canvas.getContext("2d");
-		this.pointerHandle = this.widget.addPointerIn();
-		this.updatePointerMap();
 		shadow.addEventListener("click", function (e) {
 			e.stopPropagation();
 		});
@@ -103,6 +101,8 @@ class AWKnob extends HTMLElement {
 	}
 
 	updatePointerMap() {
+		if (!this.pointerHandle)
+			return;
 		switch (this.pointerMap) {
 		case "radial":
 			this.pointerHandle.map = audioWidgets.knob.mapRadial;
@@ -121,10 +121,13 @@ class AWKnob extends HTMLElement {
 
 	connectedCallback() {
 		this.resize();
+		this.pointerHandle = this.widget.addPointerIn();
+		this.updatePointerMap();
 	}
 
 	disconnectedCallback() {
 		this.widget.removePointerIn();
+		this.pointerHandle = null;
 	}
 
 	attributeChangedCallback(property, oldValue, newValue) {

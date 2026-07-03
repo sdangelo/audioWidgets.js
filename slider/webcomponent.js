@@ -57,8 +57,6 @@ class AWSlider extends HTMLElement {
 		shadow.appendChild(div);
 		div.appendChild(this.canvas);
 		this.widget.ctx = this.canvas.getContext("2d");
-		this.pointerHandle = this.widget.addPointerIn();
-		this.updatePointerMap();
 		shadow.addEventListener("click", function (e) {
 			e.stopPropagation();
 		});
@@ -104,6 +102,8 @@ class AWSlider extends HTMLElement {
 	}
 
 	updatePointerMap() {
+		if (!this.pointerHandle)
+			return;
 		switch (this.pointerMap) {
 		case "parallel":
 			this.pointerHandle.map = audioWidgets.slider.mapParallel;
@@ -122,6 +122,8 @@ class AWSlider extends HTMLElement {
 
 	connectedCallback() {
 		this.resize();
+		this.pointerHandle = this.widget.addPointerIn();
+		this.updatePointerMap();
 	}
 
 	disconnectedCallback() {

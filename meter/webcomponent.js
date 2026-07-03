@@ -45,7 +45,6 @@ class AWMeter extends HTMLElement {
 		shadow.appendChild(div);
 		div.appendChild(this.canvas);
 		this.widget.ctx = this.canvas.getContext("2d");
-		this.widget.addPointerIn();
 		shadow.addEventListener("click", function (e) {
 			e.stopPropagation();
 		});
@@ -87,6 +86,7 @@ class AWMeter extends HTMLElement {
 
 	connectedCallback() {
 		this.resize();
+		this.widget.addPointerIn();
 	}
 
 	disconnectedCallback() {
