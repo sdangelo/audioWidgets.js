@@ -28,6 +28,8 @@ class AWSlider extends HTMLElement {
 		this.widget.init();
 		this.widget.x = 0;
 		this.widget.y = 0;
+		this.widget.width = 300;
+		this.widget.height = 150;
 		this.widget.setDisabled(this._disabled);
 		this.widget.setValue(0.5);
 		this.widget.setStep(0);

@@ -28,6 +28,8 @@ class AWButton extends HTMLElement {
 		this.widget.init();
 		this.widget.x = 0;
 		this.widget.y = 0;
+		this.widget.width = 300;
+		this.widget.height = 150;
 		this.widget.setDisabled(this._disabled);
 		this.widget.toggled = false;
 		let _self = this;

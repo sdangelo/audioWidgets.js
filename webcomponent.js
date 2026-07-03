@@ -28,6 +28,8 @@ class AWWidget extends HTMLElement {
 		this.widget.init();
 		this.widget.x = 0;
 		this.widget.y = 0;
+		this.widget.width = 300;
+		this.widget.height = 150;
 		this.widget.setDisabled(this._disabled);
 		let _self = this;
 		this.widget.addEventListener("click", function (e) {
