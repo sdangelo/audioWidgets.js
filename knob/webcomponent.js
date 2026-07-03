@@ -48,11 +48,22 @@ class AWKnob extends HTMLElement {
 			e = new CustomEvent("click", { bubbles: true, cancelable: true, detail: e.detail });
 			_self.dispatchEvent(e);
 		});
+		var shadow = this.attachShadow({ mode: "closed" });
+		this.sheet = new CSSStyleSheet();
+		shadow.adoptedStyleSheets = [this.sheet];
+		var div = document.createElement("div");
+		this.canvas = document.createElement("canvas");
+		shadow.appendChild(div);
+		div.appendChild(this.canvas);
+		this.widget.ctx = this.canvas.getContext("2d");
+		this.pointerHandle = this.widget.addPointerIn();
+		this.updatePointerMap();
+		shadow.addEventListener("click", function (e) {
+			e.stopPropagation();
+		});
 	}
 
 	resize() {
-		if (!this.shadow)
-			return;
 		this.canvas.width = this.width;
 		this.canvas.height = this.height;
 		this.widget.width = this.width;
@@ -62,8 +73,6 @@ class AWKnob extends HTMLElement {
 	}
 
 	update() {
-		if (!this.shadow)
-			return;
 		this.widget.update();
 		this.widget.clear();
 		this.widget.draw();
@@ -71,9 +80,12 @@ class AWKnob extends HTMLElement {
 
 	updateStyle() {
 		this.sheet.replaceSync(`
-			:host { display: block; position: relative }
-			:host > div {
+			:host {
+				display: block;
+				position: relative;
 				${this.disabled ? "pointer-events: none;" : ""}
+			}
+			:host > div {
 				position: relative;
 				width: ${this.canvas.width}px;
 				height: ${this.canvas.height}px;
@@ -110,21 +122,6 @@ class AWKnob extends HTMLElement {
 	}
 
 	connectedCallback() {
-		if (!this.shadow) {
-			this.shadow = this.attachShadow({ mode: "closed" });
-			this.sheet = new CSSStyleSheet();
-			this.shadow.adoptedStyleSheets = [this.sheet];
-			var div = document.createElement("div");
-			this.canvas = document.createElement("canvas");
-			this.shadow.appendChild(div);
-			div.appendChild(this.canvas);
-			this.widget.ctx = this.canvas.getContext("2d");
-			this.pointerHandle = this.widget.addPointerIn();
-			this.updatePointerMap();
-			this.shadow.addEventListener("click", function (e) {
-				e.stopPropagation();
-			});
-		}
 		this.resize();
 	}
 

@@ -36,11 +36,21 @@ class AWButton extends HTMLElement {
 			e = new CustomEvent("click", { bubbles: true, cancelable: true, detail: e.detail });
 			_self.dispatchEvent(e);
 		});
+		var shadow = this.attachShadow({ mode: "closed" });
+		this.sheet = new CSSStyleSheet();
+		shadow.adoptedStyleSheets = [this.sheet];
+		var div = document.createElement("div");
+		this.canvas = document.createElement("canvas");
+		shadow.appendChild(div);
+		div.appendChild(this.canvas);
+		this.widget.ctx = this.canvas.getContext("2d");
+		this.widget.addPointerIn();
+		shadow.addEventListener("click", function (e) {
+			e.stopPropagation();
+		});
 	}
 
 	resize() {
-		if (!this.shadow)
-			return;
 		this.canvas.width = this.width;
 		this.canvas.height = this.height;
 		this.widget.width = this.width;
@@ -50,17 +60,18 @@ class AWButton extends HTMLElement {
 	}
 
 	update() {
-		if (!this.shadow)
-			return;
 		this.widget.clear();
 		this.widget.draw();
 	}
 
 	updateStyle() {
 		this.sheet.replaceSync(`
-			:host { display: block; position: relative }
-			:host > div {
+			:host {
+				display: block;
+				position: relative;
 				${this.disabled ? "pointer-events: none;" : ""}
+			}
+			:host > div {
 				position: relative;
 				width: ${this.canvas.width}px;
 				height: ${this.canvas.height}px;
@@ -74,20 +85,6 @@ class AWButton extends HTMLElement {
 	}
 
 	connectedCallback() {
-		if (!this.shadow) {
-			this.shadow = this.attachShadow({ mode: "closed" });
-			this.sheet = new CSSStyleSheet();
-			this.shadow.adoptedStyleSheets = [this.sheet];
-			var div = document.createElement("div");
-			this.canvas = document.createElement("canvas");
-			this.shadow.appendChild(div);
-			div.appendChild(this.canvas);
-			this.widget.ctx = this.canvas.getContext("2d");
-			this.widget.addPointerIn();
-			this.shadow.addEventListener("click", function (e) {
-				e.stopPropagation();
-			});
-		}
 		this.resize();
 	}
 
