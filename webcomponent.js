@@ -44,6 +44,7 @@ class AWWidget extends HTMLElement {
 		this.canvas.height = this.height;
 		this.widget.width = this.width;
 		this.widget.height = this.height;
+		this.updateStyle();
 		this.update();
 	}
 
