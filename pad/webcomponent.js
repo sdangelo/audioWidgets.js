@@ -103,8 +103,6 @@ class AWPad extends HTMLElement {
 	}
 
 	updatePointerMap() {
-		if (!this.pointerHandle)
-			return;
 		switch (this.pointerMap) {
 		case "parallel":
 			this.pointerHandle.map = audioWidgets.pad.mapParallel;
@@ -120,6 +118,10 @@ class AWPad extends HTMLElement {
 
 	connectedCallback() {
 		this.resize();
+	}
+
+	disconnectedCallback() {
+		this.widget.removePointerIn();
 	}
 
 	attributeChangedCallback(property, oldValue, newValue) {

@@ -103,8 +103,6 @@ class AWKnob extends HTMLElement {
 	}
 
 	updatePointerMap() {
-		if (!this.pointerHandle)
-			return;
 		switch (this.pointerMap) {
 		case "radial":
 			this.pointerHandle.map = audioWidgets.knob.mapRadial;
@@ -123,6 +121,10 @@ class AWKnob extends HTMLElement {
 
 	connectedCallback() {
 		this.resize();
+	}
+
+	disconnectedCallback() {
+		this.widget.removePointerIn();
 	}
 
 	attributeChangedCallback(property, oldValue, newValue) {

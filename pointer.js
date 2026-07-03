@@ -233,7 +233,7 @@ audioWidgets.widget.addPointerIn = function () {
 	return handle;
 };
 
-audioWidgets.widget.removeMouseIn = function (handle) {
+audioWidgets.widget.removePointerIn = function (handle) {
 	for (p in handle.pointers)
 		handle.removePointer(p);
 

@@ -104,8 +104,6 @@ class AWSlider extends HTMLElement {
 	}
 
 	updatePointerMap() {
-		if (!this.pointerHandle)
-			return;
 		switch (this.pointerMap) {
 		case "parallel":
 			this.pointerHandle.map = audioWidgets.slider.mapParallel;
@@ -124,6 +122,10 @@ class AWSlider extends HTMLElement {
 
 	connectedCallback() {
 		this.resize();
+	}
+
+	disconnectedCallback() {
+		this.widget.removePointerIn();
 	}
 
 	attributeChangedCallback(property, oldValue, newValue) {

@@ -89,6 +89,10 @@ class AWMeter extends HTMLElement {
 		this.resize();
 	}
 
+	disconnectedCallback() {
+		this.widget.removePointerIn();
+	}
+
 	attributeChangedCallback(property, oldValue, newValue) {
 		if (property == "value") {
 			this.value = newValue;

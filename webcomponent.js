@@ -87,6 +87,10 @@ class AWWidget extends HTMLElement {
 		this.resize();
 	}
 
+	disconnectedCallback() {
+		this.widget.removePointerIn();
+	}
+
 	attributeChangedCallback(property, oldValue, newValue) {
 		if (oldValue == newValue)
 			return;
